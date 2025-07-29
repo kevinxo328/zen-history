@@ -1,6 +1,6 @@
 {
-  "name": "wxt-vue-starter",
-  "description": "manifest.json description",
+  "name": "history-manager",
+  "description": "A Browser Extension for managing history",
   "private": true,
   "version": "0.0.0",
   "type": "module",
