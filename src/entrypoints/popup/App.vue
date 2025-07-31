@@ -40,11 +40,15 @@ const handleSaveSettings = () => {
 
 const handleClean = async (timeRange: TimeRange) => {
   isCleaning.value = true;
-  const res = await browser.runtime.sendMessage(new CleanMessage(timeRange));
-  response.value = res;
-  setTimeout(() => {
+  try {
+    const res = await browser.runtime.sendMessage(new CleanMessage(timeRange));
+    response.value = res;
+  } catch (error) {
+    console.error("Error during cleaning:", error);
+    response.value = "An error occurred while cleaning.";
+  } finally {
     isCleaning.value = false;
-  }, 1000);
+  }
 };
 </script>
 
@@ -52,6 +56,7 @@ const handleClean = async (timeRange: TimeRange) => {
   <main class="container min-w-[400px] p-4 flex flex-col gap-y-4">
     <header>
       <h1 class="font-bold text-lg">History Manager</h1>
+      {{ response }}
     </header>
     <hr />
     <!-- <div class="border rounded-md p-4">
