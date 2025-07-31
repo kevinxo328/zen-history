@@ -19,12 +19,14 @@ import {
   TimeRange,
   TimeRangeType,
 } from "@/types/clean-settings";
+import {LoaderCircle} from "lucide-vue-next";
 
 const cleanSettingStore = useCleanSettingStore();
 
 const timeRangeType = ref<TimeRangeType>(cleanSettingStore.timeRange.type);
 const keepRecentValue = ref(KeepRecentValue.OneMonth);
 const removeRecentValue = ref(RemoveRecentValue.Past1Month);
+const isCleaning = ref(false);
 const response = ref("");
 
 const handleSaveSettings = () => {
@@ -37,8 +39,12 @@ const handleSaveSettings = () => {
 };
 
 const handleClean = async (timeRange: TimeRange) => {
+  isCleaning.value = true;
   const res = await browser.runtime.sendMessage(new CleanMessage(timeRange));
   response.value = res;
+  setTimeout(() => {
+    isCleaning.value = false;
+  }, 1000);
 };
 </script>
 
@@ -46,7 +52,6 @@ const handleClean = async (timeRange: TimeRange) => {
   <main class="container min-w-[400px] p-4 flex flex-col gap-y-4">
     <header>
       <h1 class="font-bold text-lg">History Manager</h1>
-      {{ response }}
     </header>
     <hr />
     <!-- <div class="border rounded-md p-4">
@@ -137,17 +142,21 @@ const handleClean = async (timeRange: TimeRange) => {
                 }
           )
         "
+        :disabled="isCleaning"
         size="sm"
         class="w-full"
-        >Clean now</Button
       >
+        <LoaderCircle v-if="isCleaning" class="animate-spin" />
+        {{ isCleaning ? "Cleaning..." : "Clean now" }}
+      </Button>
       <Button
         @click="handleSaveSettings"
         size="sm"
         variant="outline"
         class="w-full"
-        >Save Settings</Button
       >
+        Save Settings
+      </Button>
     </div>
   </main>
 </template>
