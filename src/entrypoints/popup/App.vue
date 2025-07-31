@@ -19,13 +19,15 @@ import {
   TimeRange,
   TimeRangeType,
 } from "@/types/clean-settings";
-import {LoaderCircle} from "lucide-vue-next";
+import {LoaderCircle, Zap, Clock} from "lucide-vue-next";
+import {Switch} from "@/components/ui/switch";
 
 const cleanSettingStore = useCleanSettingStore();
 
 const timeRangeType = ref<TimeRangeType>(cleanSettingStore.timeRange.type);
 const keepRecentValue = ref(KeepRecentValue.OneMonth);
 const removeRecentValue = ref(RemoveRecentValue.Past1Month);
+const enableAutoClean = ref(cleanSettingStore.autoClean.enabled);
 const isCleaning = ref(false);
 const response = ref("");
 
@@ -36,6 +38,7 @@ const handleSaveSettings = () => {
   } else if (timeRangeType.value === TimeRangeType.REMOVE_RECENT) {
     cleanSettingStore.timeRange.value = removeRecentValue.value;
   }
+  cleanSettingStore.autoClean.enabled = enableAutoClean.value;
 };
 
 const handleClean = async (timeRange: TimeRange) => {
@@ -59,11 +62,11 @@ const handleClean = async (timeRange: TimeRange) => {
       {{ response }}
     </header>
     <hr />
-    <!-- <div class="border rounded-md p-4">
-      <h3 class="font-bold">Clean Items</h3>
-    </div> -->
     <div class="border rounded-md p-4">
-      <h3 class="font-bold text-sm mb-2">Clean Time Range</h3>
+      <div class="flex items-center gap-x-2 mb-2">
+        <Clock class="size-4" />
+        <h3 class="font-bold text-sm">Clean Time Range</h3>
+      </div>
       <RadioGroup v-model="timeRangeType" class="mb-2">
         <div
           v-for="key in [
@@ -129,9 +132,16 @@ const handleClean = async (timeRange: TimeRange) => {
         </SelectContent>
       </Select>
     </div>
-    <!-- <div class="border rounded-md p-4">
-      <h3 class="font-bold text-sm mb-2">Auto Clean Schedule</h3>
-    </div> -->
+    <div class="border rounded-md p-4 bg-accent border-accent-foreground">
+      <div class="flex justify-between items-center mb-2">
+        <div class="flex items-center gap-x-2">
+          <Zap class="size-4" />
+          <h3 class="font-bold text-sm">Auto Clean Schedule</h3>
+        </div>
+        <Switch v-model="enableAutoClean" />
+      </div>
+      <p>Will execute auto clean tomorrow at 12:00 AM</p>
+    </div>
     <div class="flex flex-col gap-y-2">
       <Button
         @click="
