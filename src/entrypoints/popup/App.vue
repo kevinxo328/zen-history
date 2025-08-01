@@ -191,29 +191,25 @@ onBeforeMount(() => {
           />
         </div>
         <p>Will execute auto clean tomorrow at 12:00 AM</p>
-        <hr class="my-4" />
-        <div class="flex justify-between items-center">
-          <span class="text-foreground/70">Last executed</span>
-          <span
-            v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp"
-            class="font-bold"
-          >
-            {{
-              formatRelativeTime(
-                cleanSettingStore.analytics.lastAutoCleanTimestamp
-              )
-            }}
-          </span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="text-foreground/70">Total cleaned</span>
-          <span
-            v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp"
-            class="font-bold"
-          >
-            {{ cleanSettingStore.analytics.lastAutoCleanTotal }}
-          </span>
-        </div>
+        <template v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp">
+          <hr class="my-4" />
+          <div class="flex justify-between items-center">
+            <span class="text-foreground/70">Last executed</span>
+            <span class="font-bold">
+              {{
+                formatRelativeTime(
+                  cleanSettingStore.analytics.lastAutoCleanTimestamp
+                )
+              }}
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-foreground/70">Total cleaned</span>
+            <span class="font-bold">
+              {{ cleanSettingStore.analytics.lastAutoCleanTotal }}
+            </span>
+          </div>
+        </template>
       </CardContent>
     </Card>
     <div class="flex flex-col gap-y-2">
