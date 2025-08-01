@@ -20,7 +20,7 @@ import {
 } from "@/types/clean-settings";
 import {LoaderCircle, Zap, Clock, Moon, Sun} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
-import {formatRelativeTime} from "@/lib/utils";
+import {formatRelativeTime, getNextMidnightTimestamp} from "@/lib/utils";
 import {Card, CardContent} from "@/components/ui/card";
 import {useUserPreferenceStore} from "@@/stores/user-perference-store";
 
@@ -52,9 +52,9 @@ const handleClean = async (timeRange: TimeRange) => {
 const toggleAutoCleanAlarm = () => {
   if (cleanSettingStore.autoClean.enabled) {
     browser.alarms.create(AlarmsName.AUTO_CLEAN, {
-      // when: getNextMidnightTimestamp(new Date()),
-      // periodInMinutes: 24 * 60, // Repeat every 24 hours
-      delayInMinutes: 0.5,
+      when: getNextMidnightTimestamp(new Date()),
+      periodInMinutes: 24 * 60, // Repeat every 24 hours
+      // delayInMinutes: 0.5, // Testing purposes, uncomment to test
     });
   } else {
     browser.alarms.clear(AlarmsName.AUTO_CLEAN);
