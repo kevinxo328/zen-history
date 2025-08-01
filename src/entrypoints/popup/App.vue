@@ -53,7 +53,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <main class="container min-w-[400px] p-4 flex flex-col gap-y-4">
+  <main class="container min-w-[350px] p-4 flex flex-col gap-y-4">
     <header>
       <h1 class="font-bold text-lg">History Manager</h1>
       {{ response }}
@@ -161,7 +161,6 @@ onBeforeMount(() => {
           )
         "
         :disabled="isCleaning"
-        size="sm"
         class="w-full"
       >
         <LoaderCircle v-if="isCleaning" class="animate-spin" />
