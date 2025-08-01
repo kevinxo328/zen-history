@@ -92,7 +92,7 @@ onBeforeMount(() => {
       <div class="flex items-center gap-x-2">
         <img src="@/assets/Logo.svg" class="size-8" alt="logo" />
         <div>
-          <h1 class="font-bold text-sm">Zen History</h1>
+          <h1 class="font-bold text-[1.2rem] leading-none">Zen History</h1>
           <span class="text-foreground/60"> v{{ VERSION }} </span>
         </div>
       </div>
@@ -115,7 +115,7 @@ onBeforeMount(() => {
         <RadioGroup
           v-model="cleanSettingStore.timeRange.type"
           @update:model-value="setDefaultTimeRangeValue"
-          class="mb-2"
+          class="mb-3"
         >
           <div
             v-for="key in [
