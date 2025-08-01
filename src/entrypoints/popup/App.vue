@@ -231,7 +231,11 @@ onBeforeMount(() => {
               {{
                 formatMsToTimeString(
                   cleanSettingStore.analytics.lastAutoCleanDuration
-                )
+                ) === "00:00:00"
+                  ? t("< 1 second")
+                  : formatMsToTimeString(
+                      cleanSettingStore.analytics.lastAutoCleanDuration
+                    )
               }}
             </span>
           </div>

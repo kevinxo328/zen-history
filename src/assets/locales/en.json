@@ -18,9 +18,10 @@
   "Auto Clean Schedule": "Auto Clean Schedule",
   "Auto clean will run daily at 12:00 AM": "Auto clean will run daily at 12:00 AM",
   "Auto clean is disabled": "Auto clean is disabled",
-  "Last Executed": "Last Executed",
+  "Last executed": "Last executed",
   "Total cleaned": "Total cleaned",
   "Duration": "Duration",
   "Cleaned successfully": "Cleaned successfully",
-  "Clean now": "Clean now"
+  "Clean now": "Clean now",
+  "< 1 second": "< 1 second"
 }
