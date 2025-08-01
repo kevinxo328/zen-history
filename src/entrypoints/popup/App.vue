@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {useCleanSettingStore} from "@@/stores/clean-setting-store";
-import {CleanMessage} from "@/types/background";
+import {AlarmsName, CleanMessage} from "@/types/background";
 import {
   KeepRecentValue,
   RemoveRecentValue,
@@ -20,10 +20,10 @@ import {
 } from "@/types/clean-settings";
 import {LoaderCircle, Zap, Clock} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
+import {formatRelativeTime} from "@/lib/utils";
 
 const cleanSettingStore = useCleanSettingStore();
 const isCleaning = ref(false);
-const response = ref("");
 
 const setDefaultTimeRangeValue = () => {
   if (cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT) {
@@ -37,12 +37,22 @@ const handleClean = async (timeRange: TimeRange) => {
   isCleaning.value = true;
   try {
     const res = await browser.runtime.sendMessage(new CleanMessage(timeRange));
-    response.value = res;
   } catch (error) {
     console.error("Error during cleaning:", error);
-    response.value = "An error occurred while cleaning.";
   } finally {
     isCleaning.value = false;
+  }
+};
+
+const toggleAutoCleanAlarm = () => {
+  if (cleanSettingStore.autoClean.enabled) {
+    browser.alarms.create(AlarmsName.AUTO_CLEAN, {
+      // when: getNextMidnightTimestamp(new Date()),
+      // periodInMinutes: 24 * 60, // Repeat every 24 hours
+      delayInMinutes: 0.5,
+    });
+  } else {
+    browser.alarms.clear(AlarmsName.AUTO_CLEAN);
   }
 };
 
@@ -56,7 +66,6 @@ onBeforeMount(() => {
   <main class="container min-w-[350px] p-4 flex flex-col gap-y-4">
     <header>
       <h1 class="font-bold text-lg">History Manager</h1>
-      {{ response }}
     </header>
     <hr />
     <div class="border rounded-md p-4">
@@ -141,9 +150,35 @@ onBeforeMount(() => {
           <Zap class="size-4" />
           <h3 class="font-bold text-sm">Auto Clean Schedule</h3>
         </div>
-        <Switch v-model="cleanSettingStore.autoClean.enabled" />
+        <Switch
+          v-model="cleanSettingStore.autoClean.enabled"
+          @update:model-value="toggleAutoCleanAlarm"
+        />
       </div>
       <p>Will execute auto clean tomorrow at 12:00 AM</p>
+      <hr class="my-4" />
+      <div class="flex justify-between items-center">
+        <span class="text-accent-foreground/70">Last executed</span>
+        <span
+          v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp"
+          class="font-bold"
+        >
+          {{
+            formatRelativeTime(
+              cleanSettingStore.analytics.lastAutoCleanTimestamp
+            )
+          }}
+        </span>
+      </div>
+      <div class="flex justify-between items-center">
+        <span class="text-accent-foreground/70">Total cleaned</span>
+        <span
+          v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp"
+          class="font-bold"
+        >
+          {{ cleanSettingStore.analytics.lastAutoCleanTotal }}
+        </span>
+      </div>
     </div>
     <div class="flex flex-col gap-y-2">
       <Button

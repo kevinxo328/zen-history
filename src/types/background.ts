@@ -9,3 +9,7 @@ export class CleanMessage {
     this.timeRange = timeRange;
   }
 }
+
+export enum AlarmsName {
+  AUTO_CLEAN = "autoClean",
+}
