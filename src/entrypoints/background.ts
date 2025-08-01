@@ -61,19 +61,19 @@ function removeRecentHistory(value: RemoveRecentValue) {
   };
 
   switch (value) {
-    case RemoveRecentValue.Past1Hour:
+    case RemoveRecentValue.PAST_ONE_HOUR:
       removalOptions.since = now - 3600 * 1000; // 1 hour
       break;
-    case RemoveRecentValue.Past1Day:
+    case RemoveRecentValue.PAST_ONE_DAY:
       removalOptions.since = now - 24 * 3600 * 1000; // 1 day
       break;
-    case RemoveRecentValue.Past1Week:
+    case RemoveRecentValue.PAST_ONE_WEEK:
       removalOptions.since = now - 7 * 24 * 3600 * 1000; // 1 week
       break;
-    case RemoveRecentValue.Past1Month:
+    case RemoveRecentValue.PAST_ONE_MONTH:
       removalOptions.since = now - 30 * 24 * 3600 * 1000; // 1 month
       break;
-    case RemoveRecentValue.Past3Months:
+    case RemoveRecentValue.PAST_THREE_MONTH:
       removalOptions.since = now - 90 * 24 * 3600 * 1000; // 3 months
       break;
   }
@@ -88,19 +88,19 @@ function keepRecentHistory(value: KeepRecentValue) {
   let endTime = now;
 
   switch (value) {
-    case KeepRecentValue.OneDay:
+    case KeepRecentValue.ONE_DAY:
       endTime = now - 24 * 3600 * 1000; // 1 day
       break;
-    case KeepRecentValue.OneWeek:
+    case KeepRecentValue.ONE_WEEK:
       endTime = now - 7 * 24 * 3600 * 1000; // 1 week
       break;
-    case KeepRecentValue.TwoWeeks:
+    case KeepRecentValue.TWO_WEEKS:
       endTime = now - 14 * 24 * 3600 * 1000; // 2 weeks
       break;
-    case KeepRecentValue.OneMonth:
+    case KeepRecentValue.ONE_MONTH:
       endTime = now - 30 * 24 * 3600 * 1000; // 1 month
       break;
-    case KeepRecentValue.ThreeMonths:
+    case KeepRecentValue.THREE_MONTHS:
       endTime = now - 90 * 24 * 3600 * 1000; // 3 months
       break;
   }

@@ -10,7 +10,7 @@ export const useCleanSettingStore = defineStore("cleanSetting", {
   state: () => ({
     timeRange: {
       type: TimeRangeType.KEEP_RECENT,
-      value: KeepRecentValue.OneMonth,
+      value: KeepRecentValue.ONE_MONTH,
     } as TimeRange,
     autoClean: {
       enabled: false,

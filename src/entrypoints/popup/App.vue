@@ -22,30 +22,15 @@ import {LoaderCircle, Zap, Clock} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
 
 const cleanSettingStore = useCleanSettingStore();
-
-const timeRangeType = ref<TimeRangeType>(cleanSettingStore.timeRange.type);
-const keepRecentValue = ref(
-  cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
-    ? cleanSettingStore.timeRange.value
-    : KeepRecentValue.OneMonth
-);
-const removeRecentValue = ref(
-  cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT
-    ? cleanSettingStore.timeRange.value
-    : RemoveRecentValue.Past1Month
-);
-const enableAutoClean = ref(cleanSettingStore.autoClean.enabled);
 const isCleaning = ref(false);
 const response = ref("");
 
-const handleSaveSettings = () => {
-  cleanSettingStore.timeRange.type = timeRangeType.value;
-  if (timeRangeType.value === TimeRangeType.KEEP_RECENT) {
-    cleanSettingStore.timeRange.value = keepRecentValue.value;
-  } else if (timeRangeType.value === TimeRangeType.REMOVE_RECENT) {
-    cleanSettingStore.timeRange.value = removeRecentValue.value;
+const setDefaultTimeRangeValue = () => {
+  if (cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT) {
+    cleanSettingStore.timeRange.value = KeepRecentValue.ONE_MONTH;
+  } else {
+    cleanSettingStore.timeRange.value = RemoveRecentValue.PAST_ONE_MONTH;
   }
-  cleanSettingStore.autoClean.enabled = enableAutoClean.value;
 };
 
 const handleClean = async (timeRange: TimeRange) => {
@@ -79,7 +64,11 @@ onBeforeMount(() => {
         <Clock class="size-4" />
         <h3 class="font-bold text-sm">Clean Time Range</h3>
       </div>
-      <RadioGroup v-model="timeRangeType" class="mb-2">
+      <RadioGroup
+        v-model="cleanSettingStore.timeRange.type"
+        @update:model-value="setDefaultTimeRangeValue"
+        class="mb-2"
+      >
         <div
           v-for="key in [
             TimeRangeType.KEEP_RECENT,
@@ -100,14 +89,14 @@ onBeforeMount(() => {
       </RadioGroup>
       <Label class="cursor-pointer text-xs mb-1">
         {{
-          timeRangeType === TimeRangeType.KEEP_RECENT
+          cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
             ? "Select how long to keep recent data"
             : "Select time range to remove recent data"
         }}
       </Label>
       <Select
-        v-if="timeRangeType === TimeRangeType.KEEP_RECENT"
-        v-model="keepRecentValue"
+        v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
+        v-model="cleanSettingStore.timeRange.value"
       >
         <SelectTrigger class="w-full">
           <SelectValue />
@@ -125,8 +114,10 @@ onBeforeMount(() => {
         </SelectContent>
       </Select>
       <Select
-        v-else-if="timeRangeType === TimeRangeType.REMOVE_RECENT"
-        v-model="removeRecentValue"
+        v-else-if="
+          cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT
+        "
+        v-model="cleanSettingStore.timeRange.value"
       >
         <SelectTrigger class="w-full">
           <SelectValue />
@@ -150,7 +141,7 @@ onBeforeMount(() => {
           <Zap class="size-4" />
           <h3 class="font-bold text-sm">Auto Clean Schedule</h3>
         </div>
-        <Switch v-model="enableAutoClean" />
+        <Switch v-model="cleanSettingStore.autoClean.enabled" />
       </div>
       <p>Will execute auto clean tomorrow at 12:00 AM</p>
     </div>
@@ -158,14 +149,14 @@ onBeforeMount(() => {
       <Button
         @click="
           handleClean(
-            timeRangeType === TimeRangeType.KEEP_RECENT
+            cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
               ? {
                   type: TimeRangeType.KEEP_RECENT,
-                  value: keepRecentValue,
+                  value: cleanSettingStore.timeRange.value,
                 }
               : {
                   type: TimeRangeType.REMOVE_RECENT,
-                  value: removeRecentValue,
+                  value: cleanSettingStore.timeRange.value,
                 }
           )
         "
@@ -175,14 +166,6 @@ onBeforeMount(() => {
       >
         <LoaderCircle v-if="isCleaning" class="animate-spin" />
         {{ isCleaning ? "Cleaning..." : "Clean now" }}
-      </Button>
-      <Button
-        @click="handleSaveSettings"
-        size="sm"
-        variant="outline"
-        class="w-full"
-      >
-        Save Settings
       </Button>
     </div>
   </main>

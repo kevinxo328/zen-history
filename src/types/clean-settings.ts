@@ -4,20 +4,20 @@ export enum TimeRangeType {
 }
 
 export enum KeepRecentValue {
-  OneDay = "1 Day",
-  OneWeek = "1 Week",
-  TwoWeeks = "2 Weeks",
-  OneMonth = "1 Month",
-  ThreeMonths = "3 Months",
+  ONE_DAY = "1 Day",
+  ONE_WEEK = "1 Week",
+  TWO_WEEKS = "2 Weeks",
+  ONE_MONTH = "1 Month",
+  THREE_MONTHS = "3 Months",
 }
 
 export enum RemoveRecentValue {
-  Past1Hour = "Past 1 Hour",
-  Past1Day = "Past 1 Day",
-  Past1Week = "Past 1 Week",
-  Past1Month = "Past 1 Month",
-  Past3Months = "Past 3 Months",
-  AllTime = "All Time",
+  PAST_ONE_HOUR = "Past 1 Hour",
+  PAST_ONE_DAY = "Past 1 Day",
+  PAST_ONE_WEEK = "Past 1 Week",
+  PAST_ONE_MONTH = "Past 1 Month",
+  PAST_THREE_MONTH = "Past 3 Months",
+  ALL_TIME = "All Time",
 }
 
 export type TimeRange =
