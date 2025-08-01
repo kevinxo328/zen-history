@@ -3,7 +3,6 @@ import "./style.css";
 import App from "./App.vue";
 import {createPinia} from "pinia";
 import {CreateWxtPersistPiniaPlugin} from "@/plugins/wxt-persist-pinia-plugin";
-import {useCleanSettingStore} from "@@/stores/clean-setting-store";
 import {useUserPreferenceStore} from "@@/stores/user-perference-store";
 import {Theme} from "@/types/user-perference";
 
@@ -12,9 +11,6 @@ const pinia = createPinia();
 
 pinia.use(CreateWxtPersistPiniaPlugin());
 app.use(pinia);
-
-await useCleanSettingStore(pinia).$restoreFromStorage();
-await useUserPreferenceStore(pinia).$restoreFromStorage();
 
 // Apply the initial theme based on user preference
 useUserPreferenceStore(pinia).$subscribe(
