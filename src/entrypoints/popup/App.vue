@@ -22,6 +22,8 @@ import {LoaderCircle, Zap, Clock} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
 import {formatRelativeTime} from "@/lib/utils";
 
+const VERSION = import.meta.env.PACKAGE_VERSION;
+
 const cleanSettingStore = useCleanSettingStore();
 const isCleaning = ref(false);
 
@@ -65,7 +67,8 @@ onBeforeMount(() => {
 <template>
   <main class="container min-w-[350px] p-4 flex flex-col gap-y-4">
     <header>
-      <h1 class="font-bold text-lg">History Manager</h1>
+      <h1 class="font-bold text-sm">History Manager</h1>
+      <span class="text-foreground/60"> v{{ VERSION }} </span>
     </header>
     <hr />
     <div class="border rounded-md p-4">
