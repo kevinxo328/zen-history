@@ -18,7 +18,7 @@ import {
   TimeRange,
   TimeRangeType,
 } from "@/types/clean-settings";
-import {LoaderCircle, Zap, Clock, Moon, Sun} from "lucide-vue-next";
+import {LoaderCircle, Zap, Clock, Moon, Sun, Check} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
 import {formatRelativeTime, getNextMidnightTimestamp} from "@/lib/utils";
 import {Card, CardContent} from "@/components/ui/card";
@@ -29,6 +29,7 @@ const VERSION = import.meta.env.PACKAGE_VERSION;
 const cleanSettingStore = useCleanSettingStore();
 const userPerferenceStore = useUserPreferenceStore();
 const isCleaning = ref(false);
+const showCleanSuccess = ref(false);
 
 const setDefaultTimeRangeValue = () => {
   if (cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT) {
@@ -39,13 +40,24 @@ const setDefaultTimeRangeValue = () => {
 };
 
 const handleClean = async (timeRange: TimeRange) => {
+  const startTime = performance.now();
   isCleaning.value = true;
+  showCleanSuccess.value = false;
   try {
-    const res = await browser.runtime.sendMessage(new CleanMessage(timeRange));
+    await browser.runtime.sendMessage(new CleanMessage(timeRange));
   } catch (error) {
     console.error("Error during cleaning:", error);
   } finally {
-    isCleaning.value = false;
+    const endTime = performance.now();
+    const duration = endTime - startTime;
+
+    // Ensure the cleaning process is visually responsive
+    setTimeout(
+      () => {
+        isCleaning.value = false;
+      },
+      duration > 1000 ? 0 : 1000
+    );
   }
 };
 
@@ -219,12 +231,45 @@ onBeforeMount(() => {
                 }
           )
         "
-        :disabled="isCleaning"
-        class="w-full"
+        :disabled="isCleaning || showCleanSuccess"
+        :class="[
+          isCleaning ? 'w-10' : 'w-full',
+          showCleanSuccess ? 'opacity-100!' : '',
+        ]"
+        @transitionend="showCleanSuccess = true"
+        class="rounded-full m-auto transition-[width] duration-500 ease-out"
       >
         <LoaderCircle v-if="isCleaning" class="animate-spin" />
-        {{ isCleaning ? "Cleaning..." : "Clean now" }}
+        <p
+          v-else-if="showCleanSuccess"
+          @animationend="showCleanSuccess = false"
+          class="inline-flex items-center justify-center gap-x-2 animate-temporary-show"
+        >
+          <Check />
+          <span>Cleaned successfully</span>
+        </p>
+        <span v-else>Clean now</span>
       </Button>
     </div>
   </main>
 </template>
+<style scoped>
+.animate-temporary-show {
+  animation: animate-temporary-show 2s;
+}
+
+@keyframes animate-temporary-show {
+  from {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+</style>
