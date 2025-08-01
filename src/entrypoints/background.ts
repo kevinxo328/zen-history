@@ -14,9 +14,11 @@ export default defineBackground(() => {
       const timeRange = cleanMessage.timeRange;
 
       cleanHistory(timeRange)
-        .then((total) => {
-          console.log(`Successfully deleted ${total} history items`);
-          sendResponse({success: true, total});
+        .then(({total, duration}) => {
+          console.log(
+            `Successfully deleted ${total} history items in ${duration}ms`
+          );
+          sendResponse({success: true, total, duration});
         })
         .catch((error) => {
           console.error(`Failed to clear history: ${error.message || error}`);
@@ -54,8 +56,10 @@ export default defineBackground(() => {
         };
 
         cleanHistory(timeRange)
-          .then((total) => {
-            console.log(`Successfully deleted ${total} history items`);
+          .then(({total, duration}) => {
+            console.log(
+              `Successfully deleted ${total} history items in ${duration}ms`
+            );
             storage.setItem(
               key,
               {
@@ -64,6 +68,7 @@ export default defineBackground(() => {
                   ...savedState.analytics,
                   lastAutoCleanTimestamp: Date.now(),
                   lastAutoCleanTotal: total,
+                  lastAutoCleanDuration: duration,
                 },
               } as any // Update the state with the last auto-clean timestamp
             );
@@ -79,6 +84,7 @@ export default defineBackground(() => {
 function cleanHistory(timeRange: TimeRange) {
   const MAX_RESULTS = 1000; // Adjust as needed
   const now = new Date().getTime();
+  const perfStart = performance.now();
 
   let startTime: number | null = null;
   let endTime: number | null = null;
@@ -126,7 +132,7 @@ function cleanHistory(timeRange: TimeRange) {
   let totalDeleted = 0;
 
   function promiseProcess(
-    resolve: (total: number) => void,
+    resolve: (result: {total: number; duration: number}) => void,
     reject: (error: any) => void
   ) {
     browser.history
@@ -138,7 +144,10 @@ function cleanHistory(timeRange: TimeRange) {
       })
       .then((searchResults) => {
         if (!searchResults || searchResults.length === 0) {
-          resolve(totalDeleted);
+          resolve({
+            total: totalDeleted,
+            duration: performance.now() - perfStart,
+          });
         }
 
         const filteredResults = searchResults.filter(
@@ -160,7 +169,10 @@ function cleanHistory(timeRange: TimeRange) {
       .then((searchCount) => {
         // If we have fewer results than MAX_RESULTS, we are done
         if (searchCount < MAX_RESULTS) {
-          resolve(totalDeleted);
+          resolve({
+            total: totalDeleted,
+            duration: performance.now() - perfStart,
+          });
         } else {
           // Otherwise, process the next batch after a short delay
           setTimeout(() => promiseProcess(resolve, reject), 10);

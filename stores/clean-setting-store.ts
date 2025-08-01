@@ -17,6 +17,7 @@ export const useCleanSettingStore = defineStore("cleanSetting", {
     analytics: {
       lastAutoCleanTimestamp: 0,
       lastAutoCleanTotal: 0,
+      lastAutoCleanDuration: 0,
     },
   }),
 });

@@ -39,3 +39,20 @@ export function formatRelativeTime(timestamp: number): string {
   const min = String(date.getMinutes()).padStart(2, "0");
   return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
 }
+
+/**
+ * Convert milliseconds to a time string in the format of HH:MM:SS
+ * @param ms Time in milliseconds
+ * @returns Formatted time string
+ *
+ * Example: 3661000 ms -> "01:01:01"
+ */
+export function formatMsToTimeString(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}

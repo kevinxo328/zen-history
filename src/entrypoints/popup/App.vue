@@ -20,7 +20,11 @@ import {
 } from "@/types/clean-settings";
 import {LoaderCircle, Zap, Clock, Moon, Sun, Check} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
-import {formatRelativeTime, getNextMidnightTimestamp} from "@/lib/utils";
+import {
+  formatMsToTimeString,
+  formatRelativeTime,
+  getNextMidnightTimestamp,
+} from "@/lib/utils";
 import {Card, CardContent} from "@/components/ui/card";
 import {useUserPreferenceStore} from "@@/stores/user-perference-store";
 
@@ -190,7 +194,13 @@ onBeforeMount(() => {
             @update:model-value="toggleAutoCleanAlarm"
           />
         </div>
-        <p>Will execute auto clean tomorrow at 12:00 AM</p>
+        <p>
+          {{
+            cleanSettingStore.autoClean.enabled
+              ? "Auto clean will run daily at 12:00 AM."
+              : "Auto clean is disabled."
+          }}
+        </p>
         <template v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp">
           <hr class="my-4" />
           <div class="flex justify-between items-center">
@@ -207,6 +217,16 @@ onBeforeMount(() => {
             <span class="text-foreground/70">Total cleaned</span>
             <span class="font-bold">
               {{ cleanSettingStore.analytics.lastAutoCleanTotal }}
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-foreground/70">Duration</span>
+            <span class="font-bold">
+              {{
+                formatMsToTimeString(
+                  cleanSettingStore.analytics.lastAutoCleanDuration
+                )
+              }}
             </span>
           </div>
         </template>
