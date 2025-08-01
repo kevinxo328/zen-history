@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import {ref} from "vue";
 import Button from "@/components/ui/button/Button.vue";
 import {Label} from "@/components/ui/label";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
@@ -25,8 +24,16 @@ import {Switch} from "@/components/ui/switch";
 const cleanSettingStore = useCleanSettingStore();
 
 const timeRangeType = ref<TimeRangeType>(cleanSettingStore.timeRange.type);
-const keepRecentValue = ref(KeepRecentValue.OneMonth);
-const removeRecentValue = ref(RemoveRecentValue.Past1Month);
+const keepRecentValue = ref(
+  cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
+    ? cleanSettingStore.timeRange.value
+    : KeepRecentValue.OneMonth
+);
+const removeRecentValue = ref(
+  cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT
+    ? cleanSettingStore.timeRange.value
+    : RemoveRecentValue.Past1Month
+);
 const enableAutoClean = ref(cleanSettingStore.autoClean.enabled);
 const isCleaning = ref(false);
 const response = ref("");
@@ -53,6 +60,11 @@ const handleClean = async (timeRange: TimeRange) => {
     isCleaning.value = false;
   }
 };
+
+onBeforeMount(() => {
+  // Restore settings from storage when the component is mounted
+  cleanSettingStore.$restoreFromStorage();
+});
 </script>
 
 <template>
