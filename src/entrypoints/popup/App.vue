@@ -27,9 +27,11 @@ import {
 } from "@/lib/utils";
 import {Card, CardContent} from "@/components/ui/card";
 import {useUserPreferenceStore} from "@@/stores/user-perference-store";
+import useI18n from "@/composibles/useI18n";
 
 const VERSION = import.meta.env.PACKAGE_VERSION;
 
+const {t} = useI18n();
 const cleanSettingStore = useCleanSettingStore();
 const userPerferenceStore = useUserPreferenceStore();
 const isCleaning = ref(false);
@@ -90,7 +92,7 @@ onBeforeMount(() => {
       <div class="flex items-center gap-x-2">
         <img src="@/assets/Logo.svg" class="size-8" alt="logo" />
         <div>
-          <h1 class="font-bold text-sm">History Manager</h1>
+          <h1 class="font-bold text-sm">Zen History</h1>
           <span class="text-foreground/60"> v{{ VERSION }} </span>
         </div>
       </div>
@@ -108,7 +110,7 @@ onBeforeMount(() => {
       <CardContent>
         <div class="flex items-center gap-x-2 mb-2">
           <Clock class="size-4" />
-          <h3 class="font-bold text-sm">Clean Time Range</h3>
+          <h3 class="font-bold text-sm">{{ t("Clean Time Range") }}</h3>
         </div>
         <RadioGroup
           v-model="cleanSettingStore.timeRange.type"
@@ -127,8 +129,8 @@ onBeforeMount(() => {
             <Label :for="`option-${key}`" class="cursor-pointer text-xs">
               {{
                 key === TimeRangeType.KEEP_RECENT
-                  ? "Keep recent data and delete older"
-                  : "Delete data within specified time range"
+                  ? t("Keep recent data and delete older")
+                  : t("Delete data within specified time range")
               }}
             </Label>
           </div>
@@ -136,8 +138,8 @@ onBeforeMount(() => {
         <Label class="cursor-pointer text-xs mb-1">
           {{
             cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
-              ? "Select how long to keep recent data"
-              : "Select time range to remove recent data"
+              ? t("Select how long to keep")
+              : t("Select time range to remove")
           }}
         </Label>
         <Select
@@ -154,7 +156,7 @@ onBeforeMount(() => {
                 :key="option"
                 :value="option"
               >
-                {{ option }}
+                {{ t(option) }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -175,7 +177,7 @@ onBeforeMount(() => {
                 :key="option"
                 :value="option"
               >
-                {{ option }}
+                {{ t(option) }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
@@ -187,7 +189,7 @@ onBeforeMount(() => {
         <div class="flex justify-between items-center mb-2">
           <div class="flex items-center gap-x-2">
             <Zap class="size-4" />
-            <h3 class="font-bold text-sm">Auto Clean Schedule</h3>
+            <h3 class="font-bold text-sm">{{ t("Auto Clean Schedule") }}</h3>
           </div>
           <Switch
             v-model="cleanSettingStore.autoClean.enabled"
@@ -197,14 +199,14 @@ onBeforeMount(() => {
         <p>
           {{
             cleanSettingStore.autoClean.enabled
-              ? "Auto clean will run daily at 12:00 AM."
-              : "Auto clean is disabled."
+              ? t("Auto clean will run daily at 12:00 AM")
+              : t("Auto clean is disabled")
           }}
         </p>
         <template v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp">
           <hr class="my-4" />
           <div class="flex justify-between items-center">
-            <span class="text-foreground/70">Last executed</span>
+            <span class="text-foreground/70">{{ t("Last executed") }}</span>
             <span class="font-bold">
               {{
                 formatRelativeTime(
@@ -214,13 +216,13 @@ onBeforeMount(() => {
             </span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-foreground/70">Total cleaned</span>
+            <span class="text-foreground/70">{{ t("Total cleaned") }}</span>
             <span class="font-bold">
               {{ cleanSettingStore.analytics.lastAutoCleanTotal }}
             </span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-foreground/70">Duration</span>
+            <span class="text-foreground/70">{{ t("Duration") }}</span>
             <span class="font-bold">
               {{
                 formatMsToTimeString(
@@ -262,9 +264,9 @@ onBeforeMount(() => {
           class="inline-flex items-center justify-center gap-x-2 animate-temporary-show"
         >
           <Check />
-          <span>Cleaned successfully</span>
+          <span>{{ t("Cleaned successfully") }}</span>
         </p>
-        <span v-else>Clean now</span>
+        <span v-else>{{ t("Clean now") }}</span>
       </Button>
     </div>
   </main>
