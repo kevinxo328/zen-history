@@ -1,7 +1,7 @@
 {
   "Clean Time Range": "清除時間範圍",
-  "Keep recent data and delete older": "保留最近資料並刪除較舊資料",
-  "Delete data within specified time range": "刪除指定時間範圍內的資料",
+  "Keep recent history and delete older": "保留最近瀏覽記錄並刪除較舊的",
+  "Delete history within specified time range": "刪除指定時間範圍內的瀏覽記錄",
   "Select how long to keep": "選擇保留的時間",
   "Select time range to remove": "選擇刪除的時間範圍",
   "1 Day": "1 天",

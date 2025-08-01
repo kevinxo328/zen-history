@@ -1,7 +1,7 @@
 {
   "Clean Time Range": "Clean Time Range",
-  "Keep recent data and delete older": "Keep recent data and delete older",
-  "Delete data within specified time range": "Delete data within specified time range",
+  "Keep recent history and delete older": "Keep recent history and delete older",
+  "Delete history within specified time range": "Delete history within specified time range",
   "Select how long to keep": "Select how long to keep",
   "Select time range to remove": "Select time range to remove",
   "1 Day": "1 Day",

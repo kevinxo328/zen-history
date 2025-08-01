@@ -108,7 +108,7 @@ onBeforeMount(() => {
     <hr />
     <Card>
       <CardContent>
-        <div class="flex items-center gap-x-2 mb-2">
+        <div class="flex items-center gap-x-2 mb-3">
           <Clock class="size-4" />
           <h3 class="font-bold text-sm">{{ t("Clean Time Range") }}</h3>
         </div>
@@ -129,8 +129,8 @@ onBeforeMount(() => {
             <Label :for="`option-${key}`" class="cursor-pointer text-xs">
               {{
                 key === TimeRangeType.KEEP_RECENT
-                  ? t("Keep recent data and delete older")
-                  : t("Delete data within specified time range")
+                  ? t("Keep recent history and delete older")
+                  : t("Delete history within specified time range")
               }}
             </Label>
           </div>
