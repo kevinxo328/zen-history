@@ -1,5 +1,6 @@
 import {clsx, type ClassValue} from "clsx";
 import {twMerge} from "tailwind-merge";
+import {ComposerTranslation} from "vue-i18n";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,7 +19,10 @@ export function getNextMidnightTimestamp(now: Date): number {
   return nextMidnight.getTime();
 }
 
-export function formatRelativeTime(timestamp: number): string {
+export function formatRelativeTimeI18n(
+  timestamp: number,
+  t: ComposerTranslation<any, any, any>
+): string {
   const now = Date.now();
   const diffMs = now - timestamp;
   const diffMin = Math.floor(diffMs / 60000);
@@ -28,8 +32,8 @@ export function formatRelativeTime(timestamp: number): string {
     console.warn("Timestamp is in the future, cannot format relative time.");
     return "N/A";
   }
-  if (diffMin < 60) return `${diffMin} minute${diffMin <= 1 ? "" : "s"} ago`;
-  if (diffHour < 24) return `${diffHour} hour${diffHour <= 1 ? "" : "s"} ago`;
+  if (diffMin < 60) return t("minute_ago", {count: diffMin});
+  if (diffHour < 24) return t("hour_ago", {count: diffHour});
 
   const date = new Date(timestamp);
   const yyyy = date.getFullYear();

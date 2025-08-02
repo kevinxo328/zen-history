@@ -23,5 +23,7 @@
   "Duration": "經過時間",
   "Cleaned successfully": "清除成功",
   "Clean now": "立即清除",
-  "< 1 second": "< 1 秒"
+  "< 1 second": "< 1 秒",
+  "minute_ago": "{count} 分鐘前",
+  "hour_ago": "{count} 小時前"
 }

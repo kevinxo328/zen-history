@@ -23,5 +23,7 @@
   "Duration": "Duration",
   "Cleaned successfully": "Cleaned successfully",
   "Clean now": "Clean now",
-  "< 1 second": "< 1 second"
+  "< 1 second": "< 1 second",
+  "minute_ago": "{count} minute ago | {count} minutes ago",
+  "hour_ago": "{count} hour ago | {count} hours ago"
 }

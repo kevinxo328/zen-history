@@ -22,7 +22,7 @@ import {LoaderCircle, Zap, Clock, Moon, Sun, Check} from "lucide-vue-next";
 import {Switch} from "@/components/ui/switch";
 import {
   formatMsToTimeString,
-  formatRelativeTime,
+  formatRelativeTimeI18n,
   getNextMidnightTimestamp,
 } from "@/lib/utils";
 import {Card, CardContent} from "@/components/ui/card";
@@ -209,18 +209,9 @@ onBeforeMount(() => {
             <span class="text-foreground/70">{{ t("Last executed") }}</span>
             <span class="font-bold">
               {{
-                formatRelativeTime(
-                  cleanSettingStore.analytics.lastAutoCleanTimestamp
-                )
-              }}
-            </span>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="text-foreground/70">{{ t("Total cleaned") }}</span>
-            <span class="font-bold">
-              {{
-                Intl.NumberFormat().format(
-                  cleanSettingStore.analytics.lastAutoCleanTotal
+                formatRelativeTimeI18n(
+                  cleanSettingStore.analytics.lastAutoCleanTimestamp,
+                  t
                 )
               }}
             </span>
@@ -236,6 +227,16 @@ onBeforeMount(() => {
                   : formatMsToTimeString(
                       cleanSettingStore.analytics.lastAutoCleanDuration
                     )
+              }}
+            </span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-foreground/70">{{ t("Total cleaned") }}</span>
+            <span class="font-bold">
+              {{
+                Intl.NumberFormat().format(
+                  cleanSettingStore.analytics.lastAutoCleanTotal
+                )
               }}
             </span>
           </div>
