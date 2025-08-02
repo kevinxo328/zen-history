@@ -20,7 +20,7 @@ export default defineConfig({
     ],
   }),
   manifest: {
-    permissions: ["browsingData", "history", "storage", "alarms"],
+    permissions: ["history", "storage", "alarms"],
     name: "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
