@@ -79,10 +79,22 @@ const toggleAutoCleanAlarm = () => {
   }
 };
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   // Restore settings from storage when the component is mounted
-  cleanSettingStore.$restoreFromStorage();
-  userPerferenceStore.$restoreFromStorage();
+  await cleanSettingStore.$restoreFromStorage();
+  await userPerferenceStore.$restoreFromStorage();
+
+  // Ensure that alarm is set correctly based on the current settings
+  toggleAutoCleanAlarm();
+  const alarm = await browser.alarms.get(AlarmsName.AUTO_CLEAN);
+  if (alarm) {
+    console.log(
+      "Auto clean alarm is set for:",
+      new Date(alarm.scheduledTime).toLocaleString()
+    );
+  } else {
+    console.log("No auto clean alarm is currently set.");
+  }
 });
 </script>
 
