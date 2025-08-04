@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {useCleanSettingStore} from "@@/stores/clean-setting-store";
-import {AlarmsName, CleanMessage} from "@/types/background";
+import {CleanMessage} from "@/types/background";
 import {
   KeepRecentValue,
   RemoveRecentValue,
@@ -28,6 +28,7 @@ import {
 import {Card, CardContent} from "@/components/ui/card";
 import {useUserPreferenceStore} from "@@/stores/user-perference-store";
 import useI18n from "@/composibles/useI18n";
+import {toggleAutoCleanAlarm} from "@/lib/wxt";
 
 const VERSION = import.meta.env.PACKAGE_VERSION;
 
@@ -67,34 +68,10 @@ const handleClean = async (timeRange: TimeRange) => {
   }
 };
 
-const toggleAutoCleanAlarm = () => {
-  if (cleanSettingStore.autoClean.enabled) {
-    browser.alarms.create(AlarmsName.AUTO_CLEAN, {
-      when: getNextMidnightTimestamp(new Date()),
-      periodInMinutes: 24 * 60, // Repeat every 24 hours
-      // delayInMinutes: 0.5, // Testing purposes, uncomment to test
-    });
-  } else {
-    browser.alarms.clear(AlarmsName.AUTO_CLEAN);
-  }
-};
-
 onBeforeMount(async () => {
   // Restore settings from storage when the component is mounted
   await cleanSettingStore.$restoreFromStorage();
   await userPerferenceStore.$restoreFromStorage();
-
-  // Ensure that alarm is set correctly based on the current settings
-  toggleAutoCleanAlarm();
-  const alarm = await browser.alarms.get(AlarmsName.AUTO_CLEAN);
-  if (alarm) {
-    console.log(
-      "Auto clean alarm is set for:",
-      new Date(alarm.scheduledTime).toLocaleString()
-    );
-  } else {
-    console.log("No auto clean alarm is currently set.");
-  }
 });
 </script>
 

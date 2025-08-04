@@ -1,3 +1,4 @@
+import {toggleAutoCleanAlarm} from "@/lib/wxt";
 import {AlarmsName, CleanMessage} from "@/types/background";
 import {
   KeepRecentValue,
@@ -8,6 +9,44 @@ import {
 import {useCleanSettingStore} from "@@/stores/clean-setting-store";
 
 export default defineBackground(() => {
+  // Ensure that alarms are initialized
+  browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
+    if (alarm)
+      return console.log(
+        "Auto clean alarm is set for:",
+        new Date(alarm.scheduledTime).toLocaleString()
+      );
+
+    console.log("No auto clean alarm is currently set.");
+
+    // If no alarm is set, we can initialize it based on the current settings
+    storage
+      .getItem<any>(`local:${useCleanSettingStore.$id}` as const)
+      .then((savedState) => {
+        if (
+          !savedState ||
+          Object.getPrototypeOf(savedState) !== Object.prototype
+        ) {
+          console.warn("No valid state found in storage, skipping restore.");
+          return;
+        }
+
+        const enabled = savedState.autoClean?.enabled ?? false;
+        toggleAutoCleanAlarm(enabled);
+        if (enabled) {
+          browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
+            if (!alarm) return;
+            console.log(
+              "Auto clean alarm initialized for:",
+              new Date(alarm.scheduledTime).toLocaleString()
+            );
+          });
+        } else {
+          console.log("Auto clean alarm is disabled, no action taken.");
+        }
+      });
+  });
+
   browser.runtime.onMessage.addListener((message, _, sendResponse) => {
     if (message.action === CleanMessage.action) {
       const cleanMessage = message as CleanMessage;
