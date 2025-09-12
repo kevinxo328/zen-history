@@ -2,7 +2,7 @@
   "name": "zen-history",
   "description": "Let go of what you no longer need. Clean your browsing history with clarity and calm.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
