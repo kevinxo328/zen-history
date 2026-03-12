@@ -222,7 +222,7 @@ onBeforeMount(async () => {
           <div class="flex justify-between items-center">
             <span class="text-foreground/70">{{ t("Total cleaned") }}</span>
             <span class="font-bold">
-              {{
+              ~{{
                 Intl.NumberFormat().format(
                   cleanSettingStore.analytics.lastAutoCleanTotal
                 )
