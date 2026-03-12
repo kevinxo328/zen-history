@@ -1,11 +1,13 @@
 import {
   KeepRecentValue,
   RemoveRecentValue,
-  TimeRangeType,
   TimeRange,
-} from "@/types/clean-settings";
+  TimeRangeType
+} from '@/types/clean-settings';
 
-export async function cleanHistory(timeRange: TimeRange): Promise<{total: number; duration: number}> {
+export async function cleanHistory(
+  timeRange: TimeRange
+): Promise<{ total: number; duration: number }> {
   const MAX_RESULTS = 10000; // Large number to get an approximate count
   const now = new Date().getTime();
   const perfStart = performance.now();
@@ -55,10 +57,10 @@ export async function cleanHistory(timeRange: TimeRange): Promise<{total: number
 
   // 1. Search to get an approximate count of items to be deleted
   const searchResults = await browser.history.search({
-    text: "",
+    text: '',
     maxResults: MAX_RESULTS,
     ...(startTime !== null ? { startTime } : {}),
-    ...(endTime !== null ? { endTime } : {}),
+    ...(endTime !== null ? { endTime } : {})
   });
 
   const total = searchResults ? searchResults.length : 0;
@@ -67,7 +69,7 @@ export async function cleanHistory(timeRange: TimeRange): Promise<{total: number
   if (total > 0) {
     await browser.history.deleteRange({
       startTime: startTime !== null ? startTime : 0,
-      endTime: endTime !== null ? endTime : Date.now(),
+      endTime: endTime !== null ? endTime : Date.now()
     });
   }
 
@@ -75,6 +77,6 @@ export async function cleanHistory(timeRange: TimeRange): Promise<{total: number
 
   return {
     total,
-    duration,
+    duration
   };
 }

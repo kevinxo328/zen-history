@@ -1,51 +1,41 @@
-import {toggleAutoCleanAlarm} from "@/lib/wxt";
-import {AlarmsName, CleanMessage} from "@/types/background";
-import {
-  KeepRecentValue,
-  RemoveRecentValue,
-  TimeRangeType,
-  TimeRange,
-} from "@/types/clean-settings";
-import {cleanHistory} from "@/lib/history";
-import {useCleanSettingStore} from "@@/stores/clean-setting-store";
+import { cleanHistory } from '@/lib/history';
+import { toggleAutoCleanAlarm } from '@/lib/wxt';
+import { AlarmsName, CleanMessage } from '@/types/background';
+import { TimeRange } from '@/types/clean-settings';
+import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 
 export default defineBackground(() => {
   // Ensure that alarms are initialized
   browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
     if (alarm)
       return console.log(
-        "Auto clean alarm is set for:",
+        'Auto clean alarm is set for:',
         new Date(alarm.scheduledTime).toLocaleString()
       );
 
-    console.log("No auto clean alarm is currently set.");
+    console.log('No auto clean alarm is currently set.');
 
     // If no alarm is set, we can initialize it based on the current settings
-    storage
-      .getItem<any>(`local:${useCleanSettingStore.$id}` as const)
-      .then((savedState) => {
-        if (
-          !savedState ||
-          Object.getPrototypeOf(savedState) !== Object.prototype
-        ) {
-          console.warn("No valid state found in storage, skipping restore.");
-          return;
-        }
+    storage.getItem<any>(`local:${useCleanSettingStore.$id}` as const).then((savedState) => {
+      if (!savedState || Object.getPrototypeOf(savedState) !== Object.prototype) {
+        console.warn('No valid state found in storage, skipping restore.');
+        return;
+      }
 
-        const enabled = savedState.autoClean?.enabled ?? false;
-        toggleAutoCleanAlarm(enabled);
-        if (enabled) {
-          browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
-            if (!alarm) return;
-            console.log(
-              "Auto clean alarm initialized for:",
-              new Date(alarm.scheduledTime).toLocaleString()
-            );
-          });
-        } else {
-          console.log("Auto clean alarm is disabled, no action taken.");
-        }
-      });
+      const enabled = savedState.autoClean?.enabled ?? false;
+      toggleAutoCleanAlarm(enabled);
+      if (enabled) {
+        browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
+          if (!alarm) return;
+          console.log(
+            'Auto clean alarm initialized for:',
+            new Date(alarm.scheduledTime).toLocaleString()
+          );
+        });
+      } else {
+        console.log('Auto clean alarm is disabled, no action taken.');
+      }
+    });
   });
 
   browser.runtime.onMessage.addListener((message, _, sendResponse) => {
@@ -54,15 +44,13 @@ export default defineBackground(() => {
       const timeRange = cleanMessage.timeRange;
 
       cleanHistory(timeRange)
-        .then(({total, duration}) => {
-          console.log(
-            `Successfully deleted ~${total} history items in ${duration}ms`
-          );
-          sendResponse({success: true, total, duration});
+        .then(({ total, duration }) => {
+          console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
+          sendResponse({ success: true, total, duration });
         })
         .catch((error) => {
           console.error(`Failed to clear history: ${error.message || error}`);
-          sendResponse({success: false, error: error.message || error});
+          sendResponse({ success: false, error: error.message || error });
         });
 
       return true; // Indicates that the response will be sent asynchronously
@@ -74,12 +62,9 @@ export default defineBackground(() => {
       const key = `local:${useCleanSettingStore.$id}` as const;
 
       storage.getItem<any>(key).then((savedState) => {
-        console.log("Restoring state from storage:", savedState);
-        if (
-          !savedState ||
-          Object.getPrototypeOf(savedState) !== Object.prototype
-        ) {
-          console.warn("No valid state found in storage, skipping restore.");
+        console.log('Restoring state from storage:', savedState);
+        if (!savedState || Object.getPrototypeOf(savedState) !== Object.prototype) {
+          console.warn('No valid state found in storage, skipping restore.');
           return;
         }
 
@@ -87,19 +72,17 @@ export default defineBackground(() => {
         const saveValue = savedState?.timeRange?.value;
 
         if (!saveType || !saveValue) {
-          console.warn("Invalid time range type or value, skipping cleanup.");
+          console.warn('Invalid time range type or value, skipping cleanup.');
           return;
         }
         const timeRange: TimeRange = {
           type: saveType,
-          value: saveValue,
+          value: saveValue
         };
 
         cleanHistory(timeRange)
-          .then(({total, duration}) => {
-            console.log(
-              `Successfully deleted ~${total} history items in ${duration}ms`
-            );
+          .then(({ total, duration }) => {
+            console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
             storage.setItem(
               key,
               {
@@ -108,8 +91,8 @@ export default defineBackground(() => {
                   ...savedState.analytics,
                   lastAutoCleanTimestamp: Date.now(),
                   lastAutoCleanTotal: total,
-                  lastAutoCleanDuration: duration,
-                },
+                  lastAutoCleanDuration: duration
+                }
               } as any // Update the state with the last auto-clean timestamp
             );
           })
@@ -120,4 +103,3 @@ export default defineBackground(() => {
     }
   });
 });
-

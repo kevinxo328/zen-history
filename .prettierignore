@@ -1,0 +1,5 @@
+dist/
+.wxt/
+coverage/
+pnpm-lock.yaml
+*.md

@@ -1,7 +1,7 @@
-import {TimeRange} from "./clean-settings";
+import { TimeRange } from './clean-settings';
 
 export class CleanMessage {
-  static action = "CLEAN";
+  static action = 'CLEAN';
   action: string = CleanMessage.action;
   timeRange: TimeRange;
 
@@ -11,5 +11,5 @@ export class CleanMessage {
 }
 
 export enum AlarmsName {
-  AUTO_CLEAN = "autoClean",
+  AUTO_CLEAN = 'autoClean'
 }

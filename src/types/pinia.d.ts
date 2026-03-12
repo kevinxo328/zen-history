@@ -1,6 +1,6 @@
-import "pinia";
+import 'pinia';
 
-declare module "pinia" {
+declare module 'pinia' {
   export interface PiniaCustomProperties {
     $restoreFromStorage: () => Promise<void>;
   }
