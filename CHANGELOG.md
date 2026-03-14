@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.1 (2026-03-12)
+
+### Improvements
+
+- Optimized history cleaning performance so that your browsing history is cleared more reliably and quickly across specified time ranges.
+
 ## v0.1.0 (2025-12-04)
 
 ### New Features
