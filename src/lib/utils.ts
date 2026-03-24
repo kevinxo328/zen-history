@@ -2,6 +2,8 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ComposerTranslation } from 'vue-i18n';
 
+import { I18nLocales, I18nSchema } from '@/lib/i18n';
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -13,7 +15,7 @@ export function getNextMidnightTimestamp(now: Date): number {
 
 export function formatRelativeTimeI18n(
   timestamp: number,
-  t: ComposerTranslation<any, any, any>
+  t: ComposerTranslation<I18nSchema, I18nLocales>
 ): string {
   const now = Date.now();
   const diffMs = now - timestamp;

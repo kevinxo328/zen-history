@@ -17,5 +17,5 @@ function detectLocale(): I18nLocales {
 export default createI18n<[I18nSchema], I18nLocales>({
   locale: detectLocale(), // Default locale
   fallbackLocale: 'en', // Fallback locale
-  messages: messages as any
+  messages: messages as Record<I18nLocales, I18nSchema>
 });

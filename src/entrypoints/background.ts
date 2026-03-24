@@ -2,7 +2,7 @@ import { cleanHistory } from '@/lib/history';
 import { toggleAutoCleanAlarm } from '@/lib/wxt';
 import { AlarmsName, CleanMessage } from '@/types/background';
 import { TimeRange } from '@/types/clean-settings';
-import { useCleanSettingStore } from '@@/stores/clean-setting-store';
+import { CleanSettingState, useCleanSettingStore } from '@@/stores/clean-setting-store';
 
 export default defineBackground(() => {
   // Ensure that alarms are initialized
@@ -16,26 +16,28 @@ export default defineBackground(() => {
     console.log('No auto clean alarm is currently set.');
 
     // If no alarm is set, we can initialize it based on the current settings
-    storage.getItem<any>(`local:${useCleanSettingStore.$id}` as const).then((savedState) => {
-      if (!savedState || Object.getPrototypeOf(savedState) !== Object.prototype) {
-        console.warn('No valid state found in storage, skipping restore.');
-        return;
-      }
+    storage
+      .getItem<CleanSettingState>(`local:${useCleanSettingStore.$id}` as const)
+      .then((savedState) => {
+        if (!savedState || Object.getPrototypeOf(savedState) !== Object.prototype) {
+          console.warn('No valid state found in storage, skipping restore.');
+          return;
+        }
 
-      const enabled = savedState.autoClean?.enabled ?? false;
-      toggleAutoCleanAlarm(enabled);
-      if (enabled) {
-        browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
-          if (!alarm) return;
-          console.log(
-            'Auto clean alarm initialized for:',
-            new Date(alarm.scheduledTime).toLocaleString()
-          );
-        });
-      } else {
-        console.log('Auto clean alarm is disabled, no action taken.');
-      }
-    });
+        const enabled = savedState.autoClean?.enabled ?? false;
+        toggleAutoCleanAlarm(enabled);
+        if (enabled) {
+          browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
+            if (!alarm) return;
+            console.log(
+              'Auto clean alarm initialized for:',
+              new Date(alarm.scheduledTime).toLocaleString()
+            );
+          });
+        } else {
+          console.log('Auto clean alarm is disabled, no action taken.');
+        }
+      });
   });
 
   browser.runtime.onMessage.addListener((message, _, sendResponse) => {
@@ -61,7 +63,7 @@ export default defineBackground(() => {
     if (alarm.name === AlarmsName.AUTO_CLEAN) {
       const key = `local:${useCleanSettingStore.$id}` as const;
 
-      storage.getItem<any>(key).then((savedState) => {
+      storage.getItem<CleanSettingState>(key).then((savedState) => {
         console.log('Restoring state from storage:', savedState);
         if (!savedState || Object.getPrototypeOf(savedState) !== Object.prototype) {
           console.warn('No valid state found in storage, skipping restore.');
@@ -78,23 +80,20 @@ export default defineBackground(() => {
         const timeRange: TimeRange = {
           type: saveType,
           value: saveValue
-        };
+        } as TimeRange;
 
         cleanHistory(timeRange)
           .then(({ total, duration }) => {
             console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
-            storage.setItem(
-              key,
-              {
-                ...savedState,
-                analytics: {
-                  ...savedState.analytics,
-                  lastAutoCleanTimestamp: Date.now(),
-                  lastAutoCleanTotal: total,
-                  lastAutoCleanDuration: duration
-                }
-              } as any // Update the state with the last auto-clean timestamp
-            );
+            storage.setItem(key, {
+              ...savedState,
+              analytics: {
+                ...savedState.analytics,
+                lastAutoCleanTimestamp: Date.now(),
+                lastAutoCleanTotal: total,
+                lastAutoCleanDuration: duration
+              }
+            });
           })
           .catch((error) => {
             console.error(`Failed to clear history: ${error.message || error}`);

@@ -1,4 +1,4 @@
-import type { PiniaPluginContext } from 'pinia';
+import type { PiniaPluginContext, StateTree } from 'pinia';
 
 type StoragePluginOptions = {
   prefix?: 'local' | 'session' | 'managed' | 'sync';
@@ -12,7 +12,7 @@ export function CreateWxtPersistPiniaPlugin(options: StoragePluginOptions = {}) 
 
     const restoreFromStorage = async (): Promise<void> => {
       try {
-        const savedState = await storage.getItem<any>(key);
+        const savedState = await storage.getItem<StateTree>(key);
         if (savedState && typeof savedState === 'object') {
           store.$patch(savedState);
         }
@@ -21,7 +21,7 @@ export function CreateWxtPersistPiniaPlugin(options: StoragePluginOptions = {}) 
       }
     };
 
-    const saveToStorage = async (state: any): Promise<void> => {
+    const saveToStorage = async (state: StateTree): Promise<void> => {
       try {
         await storage.setItem(key, state);
       } catch (error) {

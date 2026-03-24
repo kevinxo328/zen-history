@@ -7,4 +7,5 @@ export const browserMock = {
     deleteUrl: vi.fn()
   }
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (global as any).browser = browserMock;
