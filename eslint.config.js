@@ -15,6 +15,14 @@ export default [
   ...pluginVue.configs['flat/recommended'],
   ...vueTsEslintConfig(),
   {
+    name: 'app/parser-options',
+    languageOptions: {
+      parserOptions: {
+        warnOnUnsupportedTypeScriptVersion: false
+      }
+    }
+  },
+  {
     name: 'app/custom-rules',
     plugins: {
       'simple-import-sort': simpleImportSort

@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@intlify/unplugin-vue-i18n": "^6.0.8",
-    "@types/node": "^24.1.0",
+    "@types/node": "^25.5.0",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/test-utils": "^2.4.6",
@@ -45,11 +45,11 @@
     "jsdom": "^28.1.0",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "typescript": "5.6.3",
+    "typescript": "6.0.2",
     "vite-plugin-package-version": "^1.1.0",
     "vitest": "^4.0.18",
-    "vue-tsc": "^2.2.10",
-    "wxt": "^0.20.6"
+    "vue-tsc": "^3.2.6",
+    "wxt": "^0.20.20"
   },
   "packageManager": "pnpm@10.13.1+sha1.aa8c167c4509c97519542ef77a09e4b8ab59fb6a",
   "engines": {

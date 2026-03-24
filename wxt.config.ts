@@ -9,7 +9,6 @@ export default defineConfig({
   modules: ['@wxt-dev/module-vue'],
   outDir: 'dist',
   srcDir: 'src',
-  // @ts-expect-error wxt vite type mismatch
   vite: () => ({
     plugins: [
       tailwindcss(),
