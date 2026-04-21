@@ -3,6 +3,8 @@
   "description": "Let go of what you no longer need. Clean your browsing history with clarity and calm.",
   "private": true,
   "version": "0.1.1",
+  "author": "kevinxo328",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "test": "vitest run && pnpm type-check",

@@ -14,3 +14,7 @@ No clutter. No noise. Just a browser that feels lighter, calmer, and more focuse
 - One-click manual cleanup whenever needed
 - No data leaves your device
 - Clean interface designed for focus and simplicity
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
