@@ -81,4 +81,29 @@ describe('cleanHistory', () => {
     expect(browserMock.history.deleteRange).not.toHaveBeenCalled();
     expect(result.total).toBe(0);
   });
+
+  it('calls browsingData.remove when data types are selected', async () => {
+    const dataTypes = {
+      cookies: true,
+      cache: true,
+      downloads: false,
+      formData: false
+    };
+
+    // @ts-ignore
+    await cleanHistory(
+      {
+        type: TimeRangeType.REMOVE_RECENT,
+        value: RemoveRecentValue.PAST_ONE_HOUR
+      },
+      dataTypes
+    );
+
+    const oneHourAgo = new Date('2026-03-12T11:00:00.000Z').getTime();
+
+    expect(browserMock.browsingData.remove).toHaveBeenCalledWith(
+      { since: oneHourAgo },
+      { cookies: true, cache: true, downloads: false, formData: false }
+    );
+  });
 });

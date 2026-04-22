@@ -1,4 +1,5 @@
 import {
+  BrowsingDataTypes,
   KeepRecentValue,
   RemoveRecentValue,
   TimeRange,
@@ -6,7 +7,8 @@ import {
 } from '@/types/clean-settings';
 
 export async function cleanHistory(
-  timeRange: TimeRange
+  timeRange: TimeRange,
+  dataTypes?: BrowsingDataTypes
 ): Promise<{ total: number; duration: number }> {
   const MAX_RESULTS = 10000; // Large number to get an approximate count
   const now = new Date().getTime();
@@ -71,6 +73,19 @@ export async function cleanHistory(
       startTime: startTime !== null ? startTime : 0,
       endTime: endTime !== null ? endTime : Date.now()
     });
+  }
+
+  // 3. Clear browsing data if selected
+  if (dataTypes && Object.values(dataTypes).some((v) => v)) {
+    await browser.browsingData.remove(
+      { since: startTime !== null ? startTime : 0 },
+      {
+        cookies: dataTypes.cookies,
+        cache: dataTypes.cache,
+        downloads: dataTypes.downloads,
+        formData: dataTypes.formData
+      }
+    );
   }
 
   const duration = Math.round(performance.now() - perfStart);

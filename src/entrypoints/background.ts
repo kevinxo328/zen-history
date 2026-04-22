@@ -44,8 +44,9 @@ export default defineBackground(() => {
     if (message.action === CleanMessage.action) {
       const cleanMessage = message as CleanMessage;
       const timeRange = cleanMessage.timeRange;
+      const browsingDataTypes = cleanMessage.browsingDataTypes;
 
-      cleanHistory(timeRange)
+      cleanHistory(timeRange, browsingDataTypes)
         .then(({ total, duration }) => {
           console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
           sendResponse({ success: true, total, duration });
@@ -72,6 +73,7 @@ export default defineBackground(() => {
 
         const saveType = savedState?.timeRange?.type;
         const saveValue = savedState?.timeRange?.value;
+        const browsingDataTypes = savedState?.browsingDataTypes;
 
         if (!saveType || !saveValue) {
           console.warn('Invalid time range type or value, skipping cleanup.');
@@ -82,7 +84,7 @@ export default defineBackground(() => {
           value: saveValue
         } as TimeRange;
 
-        cleanHistory(timeRange)
+        cleanHistory(timeRange, browsingDataTypes)
           .then(({ total, duration }) => {
             console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
             storage.setItem(key, {

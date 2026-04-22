@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Check, Clock, LoaderCircle, Moon, Sun, Zap } from 'lucide-vue-next';
+import { onBeforeMount, ref, toRaw } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
 import { Card, CardContent } from '@/components/ui/card';
@@ -34,6 +35,7 @@ const cleanSettingStore = useCleanSettingStore();
 const userPerferenceStore = useUserPreferenceStore();
 const isCleaning = ref(false);
 const showCleanSuccess = ref(false);
+const lastCleanTotal = ref(0);
 
 const setDefaultTimeRangeValue = () => {
   if (cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT) {
@@ -48,7 +50,12 @@ const handleClean = async (timeRange: TimeRange) => {
   isCleaning.value = true;
   showCleanSuccess.value = false;
   try {
-    await browser.runtime.sendMessage(new CleanMessage(timeRange));
+    const response = await browser.runtime.sendMessage(
+      new CleanMessage(timeRange, toRaw(cleanSettingStore.browsingDataTypes))
+    );
+    if (response && response.success) {
+      lastCleanTotal.value = response.total;
+    }
   } catch (error) {
     console.error('Error during cleaning:', error);
   } finally {
@@ -73,7 +80,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main class="container flex min-w-[350px] flex-col gap-y-4 p-4">
+  <main class="container flex min-w-[350px] flex-col gap-y-3 p-4">
     <header class="flex items-center justify-between">
       <div class="flex items-center gap-x-2">
         <img src="@/assets/Logo.svg" class="size-8" alt="logo" />
@@ -87,23 +94,19 @@ onBeforeMount(async () => {
         <Sun v-else class="size-4" />
       </Button>
     </header>
-    <hr />
     <Card>
       <CardContent>
         <div class="mb-3 flex items-center gap-x-2">
           <Clock class="size-4" />
           <h3 class="text-sm font-bold">{{ t('Clean Time Range') }}</h3>
         </div>
+
         <RadioGroup
-          v-model="cleanSettingStore.timeRange.type"
-          class="mb-3"
-          @update:model-value="setDefaultTimeRangeValue"
-        >
+v-model="cleanSettingStore.timeRange.type" class="mb-3"
+          @update:model-value="setDefaultTimeRangeValue">
           <div
-            v-for="key in [TimeRangeType.KEEP_RECENT, TimeRangeType.REMOVE_RECENT]"
-            :key="key"
-            class="flex items-center space-x-2"
-          >
+v-for="key in [TimeRangeType.KEEP_RECENT, TimeRangeType.REMOVE_RECENT]" :key="key"
+            class="flex items-center space-x-2">
             <RadioGroupItem :id="`option-${key}`" :value="key" />
             <Label :for="`option-${key}`" class="cursor-pointer text-xs">
               {{
@@ -122,38 +125,28 @@ onBeforeMount(async () => {
           }}
         </Label>
         <Select
-          v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
-          v-model="cleanSettingStore.timeRange.value"
-        >
+v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
+          v-model="cleanSettingStore.timeRange.value">
           <SelectTrigger class="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem
-                v-for="option in Object.values(KeepRecentValue)"
-                :key="option"
-                :value="option"
-              >
+              <SelectItem v-for="option in Object.values(KeepRecentValue)" :key="option" :value="option">
                 {{ t(option) }}
               </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
         <Select
-          v-else-if="cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT"
-          v-model="cleanSettingStore.timeRange.value"
-        >
+v-else-if="cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT"
+          v-model="cleanSettingStore.timeRange.value">
           <SelectTrigger class="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem
-                v-for="option in Object.values(RemoveRecentValue)"
-                :key="option"
-                :value="option"
-              >
+              <SelectItem v-for="option in Object.values(RemoveRecentValue)" :key="option" :value="option">
                 {{ t(option) }}
               </SelectItem>
             </SelectGroup>
@@ -163,15 +156,42 @@ onBeforeMount(async () => {
     </Card>
     <Card>
       <CardContent>
+        <div class="mb-3 flex items-center gap-x-2">
+          <Check class="size-4" />
+          <h3 class="text-sm font-bold">{{ t('Additional Data to Clear') }}</h3>
+        </div>
+        <div class="flex flex-col gap-y-3">
+          <div
+v-for="type in ['cookies', 'cache', 'downloads', 'formData']" :key="type"
+            class="flex items-center justify-between">
+            <Label :for="`switch-${type}`" class="cursor-pointer text-xs">
+              {{
+                t(
+                  type === 'cookies'
+                    ? 'Cookies'
+                    : type === 'cache'
+                      ? 'Cache'
+                      : type === 'downloads'
+                        ? 'Downloads'
+                        : 'Form Data'
+                )
+              }}
+            </Label>
+            <Switch
+:id="`switch-${type}`"
+              v-model="cleanSettingStore.browsingDataTypes[type as keyof typeof cleanSettingStore.browsingDataTypes]" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+    <Card>
+      <CardContent>
         <div class="mb-2 flex items-center justify-between">
           <div class="flex items-center gap-x-2">
             <Zap class="size-4" />
             <h3 class="text-sm font-bold">{{ t('Auto Clean Schedule') }}</h3>
           </div>
-          <Switch
-            v-model="cleanSettingStore.autoClean.enabled"
-            @update:model-value="toggleAutoCleanAlarm"
-          />
+          <Switch v-model="cleanSettingStore.autoClean.enabled" @update:model-value="toggleAutoCleanAlarm" />
         </div>
         <p>
           {{
@@ -181,7 +201,6 @@ onBeforeMount(async () => {
           }}
         </p>
         <template v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp">
-          <hr class="my-4" />
           <div class="flex items-center justify-between">
             <span class="text-foreground/70">{{ t('Last executed') }}</span>
             <span class="font-bold">
@@ -193,11 +212,8 @@ onBeforeMount(async () => {
             <span class="font-bold">
               {{
                 formatMsToTimeString(cleanSettingStore.analytics.lastAutoCleanDuration) ===
-                '00:00:00'
-                  ? t('< 1 second')
-                  : formatMsToTimeString(cleanSettingStore.analytics.lastAutoCleanDuration)
-              }}
-            </span>
+                  '00:00:00'
+                  ? t('< 1 second') : formatMsToTimeString(cleanSettingStore.analytics.lastAutoCleanDuration) }} </span>
           </div>
           <div class="flex items-center justify-between">
             <span class="text-foreground/70">{{ t('Total cleaned') }}</span>
@@ -210,32 +226,27 @@ onBeforeMount(async () => {
     </Card>
     <div class="flex flex-col gap-y-2">
       <Button
-        :disabled="isCleaning || showCleanSuccess"
+:disabled="isCleaning || showCleanSuccess"
         :class="[isCleaning ? 'w-10' : 'w-full', showCleanSuccess ? 'opacity-100!' : '']"
-        class="m-auto rounded-full transition-[width] duration-500 ease-out"
-        @click="
+        class="m-auto rounded-full transition-[width] duration-500 ease-out" @click="
           handleClean(
             cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
               ? {
-                  type: TimeRangeType.KEEP_RECENT,
-                  value: cleanSettingStore.timeRange.value
-                }
+                type: TimeRangeType.KEEP_RECENT,
+                value: cleanSettingStore.timeRange.value
+              }
               : {
-                  type: TimeRangeType.REMOVE_RECENT,
-                  value: cleanSettingStore.timeRange.value
-                }
+                type: TimeRangeType.REMOVE_RECENT,
+                value: cleanSettingStore.timeRange.value
+              }
           )
-        "
-        @transitionend="showCleanSuccess = true"
-      >
+          " @transitionend="showCleanSuccess = true">
         <LoaderCircle v-if="isCleaning" class="animate-spin" />
         <p
-          v-else-if="showCleanSuccess"
-          class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
-          @animationend="showCleanSuccess = false"
-        >
+v-else-if="showCleanSuccess" class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
+          @animationend="showCleanSuccess = false">
           <Check />
-          <span>{{ t('Cleaned successfully') }}</span>
+          <span>{{ t('Cleaned successfully', { count: lastCleanTotal }) }}</span>
         </p>
         <span v-else>{{ t('Clean now') }}</span>
       </Button>
@@ -251,12 +262,15 @@ onBeforeMount(async () => {
   from {
     opacity: 0;
   }
+
   25% {
     opacity: 1;
   }
+
   75% {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }

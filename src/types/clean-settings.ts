@@ -20,6 +20,13 @@ export enum RemoveRecentValue {
   ALL_TIME = 'All Time'
 }
 
+export interface BrowsingDataTypes {
+  cookies: boolean;
+  cache: boolean;
+  downloads: boolean;
+  formData: boolean;
+}
+
 export type TimeRange =
   | {
       type: TimeRangeType.KEEP_RECENT;

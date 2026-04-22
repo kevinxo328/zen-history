@@ -19,7 +19,7 @@ export default defineConfig({
     ]
   }),
   manifest: {
-    permissions: ['history', 'storage', 'alarms'],
+    permissions: ['history', 'storage', 'alarms', 'browsingData'],
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en'
