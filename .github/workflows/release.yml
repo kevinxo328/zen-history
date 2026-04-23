@@ -45,31 +45,47 @@ jobs:
           body: ${{ steps.changelog.outputs.notes }}
 
       - name: Submit to Chrome Web Store
-        run: pnpm wxt submit --chrome-zip dist/*-chrome.zip
-        env:
-          CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
-          CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
-          CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
-          CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
-
-      - name: Verify submitted version
         run: |
+          ZIP=$(ls dist/*-chrome.zip)
+          echo "Uploading $ZIP"
+
           TOKEN=$(curl -s -X POST https://oauth2.googleapis.com/token \
             -d "client_id=$CHROME_CLIENT_ID&client_secret=$CHROME_CLIENT_SECRET&refresh_token=$CHROME_REFRESH_TOKEN&grant_type=refresh_token" \
             | jq -r '.access_token')
 
-          VERSION=$(curl -s "https://www.googleapis.com/chromewebstore/v1.1/items/$CHROME_EXTENSION_ID?projection=draft" \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "x-goog-api-version: 2" \
-            | jq -r '.crxVersion')
-
-          EXPECTED=$(node -p "require('./package.json').version")
-
-          if [ "$VERSION" != "$EXPECTED" ]; then
-            echo "Version mismatch! Expected $EXPECTED but got $VERSION"
+          if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+            echo "Failed to get access token"
             exit 1
           fi
-          echo "Version verified: $VERSION"
+
+          UPLOAD_RESPONSE=$(curl -s \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "x-goog-api-version: 2" \
+            -X PUT -T "$ZIP" \
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items/$CHROME_EXTENSION_ID")
+
+          echo "Upload response: $UPLOAD_RESPONSE"
+          UPLOAD_STATE=$(echo "$UPLOAD_RESPONSE" | jq -r '.uploadState')
+          if [ "$UPLOAD_STATE" != "SUCCESS" ]; then
+            echo "Upload failed: $UPLOAD_STATE"
+            exit 1
+          fi
+
+          PUBLISH_RESPONSE=$(curl -s \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "x-goog-api-version: 2" \
+            -H "Content-Length: 0" \
+            -X POST \
+            "https://www.googleapis.com/chromewebstore/v1.1/items/$CHROME_EXTENSION_ID/publish")
+
+          echo "Publish response: $PUBLISH_RESPONSE"
+          STATUS=$(echo "$PUBLISH_RESPONSE" | jq -r '.status[0]')
+          if [ "$STATUS" != "OK" ]; then
+            echo "Publish failed: $STATUS"
+            exit 1
+          fi
+
+          echo "Successfully submitted for review"
         env:
           CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
           CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
