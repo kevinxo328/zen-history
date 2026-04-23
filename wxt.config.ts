@@ -24,5 +24,13 @@ export default defineConfig({
     description: '__MSG_extDescription__',
     default_locale: 'en',
     options_page: 'settings.html'
-  }
+  },
+  submit: {
+    chrome: {
+      clientId: process.env.CHROME_CLIENT_ID!,
+      clientSecret: process.env.CHROME_CLIENT_SECRET!,
+      refreshToken: process.env.CHROME_REFRESH_TOKEN!,
+      extensionId: process.env.CHROME_EXTENSION_ID!,
+    },
+  },
 });
