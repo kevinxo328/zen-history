@@ -25,6 +25,7 @@ export default defineConfig({
     default_locale: 'en',
     options_page: 'settings.html'
   },
+  // @ts-expect-error - submit is a valid wxt config key but missing from UserConfig types
   submit: {
     chrome: {
       clientId: process.env.CHROME_CLIENT_ID!,

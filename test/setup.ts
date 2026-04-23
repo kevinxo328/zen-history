@@ -11,7 +11,11 @@ export const browserMock = {
   },
   runtime: {
     sendMessage: vi.fn(),
-    openOptionsPage: vi.fn()
+    openOptionsPage: vi.fn(),
+    getURL: vi.fn((path: string) => `chrome-extension://mock-id${path}`)
+  },
+  tabs: {
+    create: vi.fn()
   }
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
