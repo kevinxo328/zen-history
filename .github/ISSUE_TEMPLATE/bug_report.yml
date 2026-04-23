@@ -1,0 +1,77 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: input
+    id: extension-version
+    attributes:
+      label: Extension Version
+      description: Which version of Zen History are you using?
+      placeholder: "e.g. v0.1.1"
+    validations:
+      required: true
+
+  - type: input
+    id: browser-version
+    attributes:
+      label: Browser & Version
+      description: Which browser and version are you using?
+      placeholder: "e.g. Chrome 124, Firefox 125"
+    validations:
+      required: true
+
+  - type: input
+    id: os-version
+    attributes:
+      label: OS & Version
+      description: Which operating system and version are you using?
+      placeholder: "e.g. macOS 15.4, Windows 11, Ubuntu 24.04"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Clear steps to reproduce the issue.
+      placeholder: |
+        1. Go to ...
+        2. Click on ...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: input
+    id: contact-email
+    attributes:
+      label: Contact Email
+      description: Optional. We may reach out if we need more details.
+      placeholder: "e.g. you@example.com"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Optional. Attach screenshots or paste relevant logs here.
+      placeholder: "Paste logs or drag and drop screenshots here."
+    validations:
+      required: false
