@@ -18,8 +18,8 @@ export const browserMock = {
 (global as any).browser = browserMock;
 
 // Mock localStorage
-global.localStorage = {
-  state: {},
+const localStorageMock = {
+  state: {} as Record<string, string>,
   setItem(key: string, value: string) {
     this.state[key] = value;
   },
@@ -36,4 +36,6 @@ global.localStorage = {
   key(index: number) {
     return Object.keys(this.state)[index] || null;
   }
-} as any;
+};
+
+global.localStorage = localStorageMock as unknown as Storage;

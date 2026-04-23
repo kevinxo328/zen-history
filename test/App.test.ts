@@ -21,7 +21,7 @@ vi.mock('@/lib/i18n', () => ({
 // Mock i18n
 vi.mock('@/composibles/useI18n', () => ({
   default: () => ({
-    t: (key: string, params?: any) => {
+    t: (key: string, params?: Record<string, unknown>) => {
       if (key === 'Cleaned successfully' && params) {
         return `Cleaned ~${params.count} items`;
       }
