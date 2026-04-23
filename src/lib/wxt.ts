@@ -2,7 +2,11 @@ import { AlarmsName } from '@/types/background';
 
 import { getNextScheduledTimestamp } from './utils';
 
-export const toggleAutoCleanAlarm = async (enabled: boolean, hour: number = 0, minute: number = 0) => {
+export const toggleAutoCleanAlarm = async (
+  enabled: boolean,
+  hour: number = 0,
+  minute: number = 0
+) => {
   if (enabled) {
     browser.alarms.create(AlarmsName.AUTO_CLEAN, {
       when: getNextScheduledTimestamp(new Date(), hour, minute)

@@ -21,26 +21,30 @@ const dataTypes: { id: keyof BrowsingDataTypes; label: string; desc: string }[] 
 <template>
   <div class="space-y-10">
     <header class="space-y-3">
-      <div class="flex items-center gap-x-2 pb-2 border-b">
-        <ShieldCheck class="size-5 text-primary" />
+      <div class="flex items-center gap-x-2 border-b pb-2">
+        <ShieldCheck class="text-primary size-5" />
         <h3 class="text-lg font-bold">{{ t('Additional Data to Clear') }}</h3>
       </div>
-      <p class="text-muted-foreground text-base leading-relaxed pt-2">
-        {{ t('Select additional browsing data types to clear during cleanup. This helps maintain a completely clean history.') }}
+      <p class="text-muted-foreground pt-2 text-base leading-relaxed">
+        {{
+          t(
+            'Select additional browsing data types to clear during cleanup. This helps maintain a completely clean history.'
+          )
+        }}
       </p>
     </header>
 
-    <div class="divide-y border-t border-b border-border/50">
+    <div class="border-border/50 divide-y border-t border-b">
       <div
         v-for="type in dataTypes"
         :key="type.id"
-        class="flex items-center justify-between py-8 transition-colors hover:bg-muted/30 px-6 -mx-6 rounded-2xl"
+        class="hover:bg-muted/30 -mx-6 flex items-center justify-between rounded-2xl px-6 py-8 transition-colors"
       >
         <div class="grid gap-y-1">
           <Label :for="`switch-${type.id}`" class="cursor-pointer text-lg font-bold">
             {{ t(type.label) }}
           </Label>
-          <p class="text-sm text-muted-foreground">{{ t(type.desc) }}</p>
+          <p class="text-muted-foreground text-sm">{{ t(type.desc) }}</p>
         </div>
         <Switch
           :id="`switch-${type.id}`"

@@ -1,7 +1,7 @@
 name: Feature Request
 description: Suggest a new feature or improvement
-title: "[Feature] "
-labels: ["enhancement"]
+title: '[Feature] '
+labels: ['enhancement']
 body:
   - type: textarea
     id: description
@@ -17,7 +17,7 @@ body:
     attributes:
       label: Contact Email
       description: Optional. We may reach out if we need more details.
-      placeholder: "e.g. you@example.com"
+      placeholder: 'e.g. you@example.com'
     validations:
       required: false
 
@@ -26,6 +26,6 @@ body:
     attributes:
       label: Additional Information
       description: Optional. Attach screenshots, mockups, or any other context.
-      placeholder: "Paste logs or drag and drop screenshots here."
+      placeholder: 'Paste logs or drag and drop screenshots here.'
     validations:
       required: false

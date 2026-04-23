@@ -210,7 +210,11 @@ onBeforeMount(async () => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem v-for="option in Object.values(KeepRecentValue)" :key="option" :value="option">
+              <SelectItem
+                v-for="option in Object.values(KeepRecentValue)"
+                :key="option"
+                :value="option"
+              >
                 {{ t(option) }}
               </SelectItem>
             </SelectGroup>
@@ -226,7 +230,11 @@ onBeforeMount(async () => {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem v-for="option in Object.values(RemoveRecentValue)" :key="option" :value="option">
+              <SelectItem
+                v-for="option in Object.values(RemoveRecentValue)"
+                :key="option"
+                :value="option"
+              >
                 {{ t(option) }}
               </SelectItem>
             </SelectGroup>
@@ -287,10 +295,13 @@ onBeforeMount(async () => {
             </Select>
           </div>
         </div>
-        <p v-else class="text-xs text-foreground/70">
+        <p v-else class="text-foreground/70 text-xs">
           {{ t('Auto clean is disabled') }}
         </p>
-        <div v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp" class="mt-2 flex flex-col gap-y-1 text-sm">
+        <div
+          v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp"
+          class="mt-2 flex flex-col gap-y-1 text-sm"
+        >
           <div class="flex items-center justify-between">
             <span class="text-foreground/70">{{ t('Last executed') }}</span>
             <span class="font-bold">
@@ -302,14 +313,15 @@ onBeforeMount(async () => {
             <span class="font-bold">
               {{
                 formatMsToTimeString(cleanSettingStore.analytics.lastAutoCleanDuration) ===
-                  '00:00:00'
-                  ? t('< 1 second') : formatMsToTimeString(cleanSettingStore.analytics.lastAutoCleanDuration) }} </span>
+                '00:00:00'
+                  ? t('< 1 second')
+                  : formatMsToTimeString(cleanSettingStore.analytics.lastAutoCleanDuration)
+              }}
+            </span>
           </div>
           <div class="flex items-center justify-between">
             <span class="text-foreground/70">{{ t('Total cleaned') }}</span>
-            <span class="font-bold">
-              ~{{ autoCleanTotalLabel }}
-            </span>
+            <span class="font-bold"> ~{{ autoCleanTotalLabel }} </span>
           </div>
         </div>
       </CardContent>
@@ -319,23 +331,28 @@ onBeforeMount(async () => {
       <Button
         :disabled="isCleaning || showCleanSuccess"
         :class="[isCleaning ? 'w-10' : 'w-full', showCleanSuccess ? 'opacity-100!' : '']"
-        class="m-auto rounded-full transition-[width] duration-500 ease-out" @click="
+        class="m-auto rounded-full transition-[width] duration-500 ease-out"
+        @click="
           handleClean(
             cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
               ? {
-                type: TimeRangeType.KEEP_RECENT,
-                value: cleanSettingStore.timeRange.value
-              }
+                  type: TimeRangeType.KEEP_RECENT,
+                  value: cleanSettingStore.timeRange.value
+                }
               : {
-                type: TimeRangeType.REMOVE_RECENT,
-                value: cleanSettingStore.timeRange.value
-              }
+                  type: TimeRangeType.REMOVE_RECENT,
+                  value: cleanSettingStore.timeRange.value
+                }
           )
-          " @transitionend="showCleanSuccess = true">
+        "
+        @transitionend="showCleanSuccess = true"
+      >
         <LoaderCircle v-if="isCleaning" class="animate-spin" />
         <p
-          v-else-if="showCleanSuccess" class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
-          @animationend="showCleanSuccess = false">
+          v-else-if="showCleanSuccess"
+          class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
+          @animationend="showCleanSuccess = false"
+        >
           <Check />
           <span>{{ t('Cleaned successfully', { count: manualCleanTotalLabel }) }}</span>
         </p>

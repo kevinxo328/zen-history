@@ -40,15 +40,17 @@ describe('AboutSettings.vue', () => {
     expect(wrapper.text()).toContain('Feedback & Support');
     expect(wrapper.text()).toContain('Rate on Web Store');
     expect(wrapper.text()).toContain('Report an Issue');
-    
+
     const links = wrapper.findAll('a');
     expect(links.length).toBe(2);
-    
-    const storeLink = links.find(l => l.attributes('href')?.includes('chromewebstore'));
+
+    const storeLink = links.find((l) => l.attributes('href')?.includes('chromewebstore'));
     expect(storeLink).toBeDefined();
-    
-    const bugLink = links.find(l => l.attributes('href')?.includes('github.com'));
+
+    const bugLink = links.find((l) => l.attributes('href')?.includes('github.com'));
     expect(bugLink).toBeDefined();
-    expect(bugLink?.attributes('href')).toBe('https://github.com/kevinxo328/zen-history/issues/new?template=bug_report.yml');
+    expect(bugLink?.attributes('href')).toBe(
+      'https://github.com/kevinxo328/zen-history/issues/new?template=bug_report.yml'
+    );
   });
 });

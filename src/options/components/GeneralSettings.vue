@@ -21,15 +21,15 @@ const userPreferenceStore = useUserPreferenceStore();
   <div class="space-y-12">
     <!-- Language Section -->
     <section class="space-y-8">
-      <div class="flex items-center gap-x-2 pb-2 border-b">
-        <Languages class="size-5 text-primary" />
+      <div class="flex items-center gap-x-2 border-b pb-2">
+        <Languages class="text-primary size-5" />
         <h3 class="text-lg font-bold">{{ t('Interface Language') }}</h3>
       </div>
 
       <div class="flex items-center justify-between py-2">
         <div class="space-y-1">
           <Label class="text-base font-semibold">{{ t('Language') }}</Label>
-          <p class="text-sm text-muted-foreground">
+          <p class="text-muted-foreground text-sm">
             {{ t('Select your preferred language for the interface.') }}
           </p>
         </div>
@@ -37,7 +37,7 @@ const userPreferenceStore = useUserPreferenceStore();
           :model-value="userPreferenceStore.locale"
           @update:model-value="(val) => userPreferenceStore.setLocale(val as Locale)"
         >
-          <SelectTrigger class="w-[200px] h-11 bg-background shadow-sm rounded-xl">
+          <SelectTrigger class="bg-background h-11 w-[200px] rounded-xl shadow-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

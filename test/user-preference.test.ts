@@ -1,5 +1,5 @@
-import { createPinia,setActivePinia } from 'pinia';
-import { beforeEach,describe, expect, it } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import i18n from '../src/lib/i18n';
 import { Locale } from '../src/types/user-perference';
@@ -16,7 +16,7 @@ describe('UserPreferenceStore', () => {
     expect(store.locale).toBe(Locale.ZH_TW);
     // @ts-expect-error - vue-i18n locale type is ref or string depending on mode
     expect(i18n.global.locale.value || i18n.global.locale).toBe(Locale.ZH_TW);
-    
+
     store.setLocale(Locale.EN);
     expect(store.locale).toBe(Locale.EN);
     // @ts-expect-error - vue-i18n locale type is ref or string depending on mode

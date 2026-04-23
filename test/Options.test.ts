@@ -39,7 +39,7 @@ describe('Options.vue', () => {
     const wrapper = mount(Options);
 
     // Switch to cleanup tab
-    const cleanupTab = wrapper.findAll('button').find(b => b.text().includes('Advanced Cleanup'));
+    const cleanupTab = wrapper.findAll('button').find((b) => b.text().includes('Advanced Cleanup'));
     await cleanupTab?.trigger('click');
 
     expect(wrapper.text()).toContain('Additional Data to Clear');
@@ -52,7 +52,7 @@ describe('Options.vue', () => {
     const store = useCleanSettingStore();
 
     // Switch to cleanup tab
-    const cleanupTab = wrapper.findAll('button').find(b => b.text().includes('Advanced Cleanup'));
+    const cleanupTab = wrapper.findAll('button').find((b) => b.text().includes('Advanced Cleanup'));
     await cleanupTab?.trigger('click');
 
     expect(store.browsingDataTypes.cookies).toBe(false);

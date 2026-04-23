@@ -22,7 +22,11 @@ export function getNextMidnightTimestamp(now: Date): number {
  * @param targetMinute Minute (0-59)
  * @returns Timestamp of the next occurrence
  */
-export function getNextScheduledTimestamp(now: Date, targetHour: number, targetMinute: number): number {
+export function getNextScheduledTimestamp(
+  now: Date,
+  targetHour: number,
+  targetMinute: number
+): number {
   const nextTime = new Date(
     now.getFullYear(),
     now.getMonth(),

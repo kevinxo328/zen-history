@@ -46,7 +46,7 @@ describe('App.vue', () => {
 
   it('renders time range and auto clean options', () => {
     const wrapper = mount(App);
-    
+
     expect(wrapper.text()).toContain('Clean Time Range');
     expect(wrapper.text()).toContain('Daily Auto Clean');
   });
@@ -61,12 +61,12 @@ describe('App.vue', () => {
     await cleanButton.trigger('click');
 
     await vi.dynamicImportSettled();
-    
+
     // @ts-expect-error - accessing internal component state not exposed in types
     wrapper.vm.showCleanSuccess = true;
     // @ts-expect-error - accessing internal component state not exposed in types
     wrapper.vm.lastCleanTotal = 42;
-    
+
     await wrapper.vm.$nextTick();
     expect(wrapper.text()).toContain('Cleaned ~42 items');
   });
