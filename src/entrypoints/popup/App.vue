@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Check, Clock, LoaderCircle, Moon, Settings, Sun, Zap } from 'lucide-vue-next';
-import { onBeforeMount, ref, toRaw } from 'vue';
+import { onBeforeMount, ref, toRaw, watch } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import useI18n from '@/composibles/useI18n';
+import i18n from '@/lib/i18n';
 import { formatMsToTimeString, formatRelativeTimeI18n } from '@/lib/utils';
 import { toggleAutoCleanAlarm } from '@/lib/wxt';
 import { CleanMessage } from '@/types/background';
@@ -25,6 +26,7 @@ import {
   TimeRange,
   TimeRangeType
 } from '@/types/clean-settings';
+import { Locale } from '@/types/user-perference';
 import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 import { useUserPreferenceStore } from '@@/stores/user-perference-store';
 
@@ -36,6 +38,21 @@ const userPerferenceStore = useUserPreferenceStore();
 const isCleaning = ref(false);
 const showCleanSuccess = ref(false);
 const lastCleanTotal = ref(0);
+
+// Sync i18n with store locale
+watch(
+  () => userPerferenceStore.locale,
+  (newLocale) => {
+    if (!newLocale) return;
+    const globalLocale = i18n.global.locale as any;
+    if (globalLocale.value !== undefined) {
+      globalLocale.value = newLocale as any;
+    } else {
+      i18n.global.locale = newLocale as any;
+    }
+  },
+  { immediate: true }
+);
 
 const setDefaultTimeRangeValue = () => {
   if (cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT) {
@@ -140,6 +157,7 @@ onBeforeMount(async () => {
         </Label>
         <Select
           v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
+          :key="`select-keep-${userPerferenceStore.locale}`"
           v-model="cleanSettingStore.timeRange.value"
         >
           <SelectTrigger class="w-full">
@@ -155,6 +173,7 @@ onBeforeMount(async () => {
         </Select>
         <Select
           v-else-if="cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT"
+          :key="`select-remove-${userPerferenceStore.locale}`"
           v-model="cleanSettingStore.timeRange.value"
         >
           <SelectTrigger class="w-full">

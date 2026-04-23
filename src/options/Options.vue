@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Check, Languages, Moon, Sun } from 'lucide-vue-next';
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, watch } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
 import { Card, CardContent } from '@/components/ui/card';
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import useI18n from '@/composibles/useI18n';
+import i18n from '@/lib/i18n';
 import { Locale } from '@/types/user-perference';
 import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 import { useUserPreferenceStore } from '@@/stores/user-perference-store';
@@ -21,6 +22,21 @@ import { useUserPreferenceStore } from '@@/stores/user-perference-store';
 const { t } = useI18n();
 const cleanSettingStore = useCleanSettingStore();
 const userPerferenceStore = useUserPreferenceStore();
+
+// Sync i18n with store locale
+watch(
+  () => userPerferenceStore.locale,
+  (newLocale) => {
+    if (!newLocale) return;
+    const globalLocale = i18n.global.locale as any;
+    if (globalLocale.value !== undefined) {
+      globalLocale.value = newLocale;
+    } else {
+      i18n.global.locale = newLocale as any;
+    }
+  },
+  { immediate: true }
+);
 
 onBeforeMount(async () => {
   await cleanSettingStore.$restoreFromStorage();
@@ -97,9 +113,10 @@ onBeforeMount(async () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem :value="Locale.EN">{{ t('English') }}</SelectItem>
-                <SelectItem :value="Locale.ZH_TW">{{ t('Chinese (Traditional)') }}</SelectItem>
+                <SelectItem :value="Locale.EN">English</SelectItem>
+                <SelectItem :value="Locale.ZH_TW">繁體中文</SelectItem>
               </SelectContent>
+
             </Select>
           </div>
         </CardContent>

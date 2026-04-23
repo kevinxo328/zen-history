@@ -10,7 +10,8 @@ export const browserMock = {
     remove: vi.fn()
   },
   runtime: {
-    sendMessage: vi.fn()
+    sendMessage: vi.fn(),
+    openOptionsPage: vi.fn()
   }
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
