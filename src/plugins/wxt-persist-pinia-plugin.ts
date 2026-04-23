@@ -29,8 +29,8 @@ export function CreateWxtPersistPiniaPlugin(options: StoragePluginOptions = {}) 
       }
     };
 
-    // Watch for changes from other pages
-    const unwatch = storage.watch<StateTree>(key, (newState) => {
+    // Watch for changes from other pages (unwatch intentionally discarded - no teardown hook available)
+    void storage.watch<StateTree>(key, (newState) => {
       if (newState) {
         store.$patch(newState);
       }

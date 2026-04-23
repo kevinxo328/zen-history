@@ -40,9 +40,7 @@ describe('App.vue', () => {
     setActivePinia(createPinia());
     const cleanSettingStore = useCleanSettingStore();
     const userPreferenceStore = useUserPreferenceStore();
-    // @ts-ignore
     cleanSettingStore.$restoreFromStorage = vi.fn().mockResolvedValue(undefined);
-    // @ts-ignore
     userPreferenceStore.$restoreFromStorage = vi.fn().mockResolvedValue(undefined);
   });
 
@@ -56,7 +54,7 @@ describe('App.vue', () => {
   it('displays the number of cleared items after a manual clean', async () => {
     const wrapper = mount(App);
     const sendMessageMock = vi.mocked(browser.runtime.sendMessage);
-    // @ts-ignore
+    // @ts-expect-error - mock type does not match browser.runtime.sendMessage overloads
     sendMessageMock.mockResolvedValue({ success: true, total: 42, duration: 100 });
 
     const cleanButton = wrapper.find('button');
@@ -64,10 +62,10 @@ describe('App.vue', () => {
 
     await vi.dynamicImportSettled();
     
-    // @ts-ignore
+    // @ts-expect-error - accessing internal component state not exposed in types
     wrapper.vm.showCleanSuccess = true;
-    // @ts-ignore
-    wrapper.vm.lastCleanTotal = 42; 
+    // @ts-expect-error - accessing internal component state not exposed in types
+    wrapper.vm.lastCleanTotal = 42;
     
     await wrapper.vm.$nextTick();
     expect(wrapper.text()).toContain('Cleaned ~42 items');

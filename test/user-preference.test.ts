@@ -14,12 +14,12 @@ describe('UserPreferenceStore', () => {
     const store = useUserPreferenceStore();
     store.setLocale(Locale.ZH_TW);
     expect(store.locale).toBe(Locale.ZH_TW);
-    // @ts-ignore
+    // @ts-expect-error - vue-i18n locale type is ref or string depending on mode
     expect(i18n.global.locale.value || i18n.global.locale).toBe(Locale.ZH_TW);
     
     store.setLocale(Locale.EN);
     expect(store.locale).toBe(Locale.EN);
-    // @ts-ignore
+    // @ts-expect-error - vue-i18n locale type is ref or string depending on mode
     expect(i18n.global.locale.value || i18n.global.locale).toBe(Locale.EN);
   });
 });

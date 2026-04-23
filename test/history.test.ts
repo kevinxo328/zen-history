@@ -90,7 +90,6 @@ describe('cleanHistory', () => {
       formData: false
     };
 
-    // @ts-ignore
     await cleanHistory(
       {
         type: TimeRangeType.REMOVE_RECENT,

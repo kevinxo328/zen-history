@@ -5,13 +5,12 @@ import { Locale } from '@/types/user-perference';
 
 export const useUserPreferenceStore = defineStore('userPreference', {
   state: () => ({
-    // @ts-ignore - vue-i18n type mismatch in global instance
+    // @ts-expect-error - vue-i18n type mismatch in global instance
     locale: (i18n.global.locale.value || i18n.global.locale) as Locale
   }),
   actions: {
     setLocale(locale: Locale) {
       this.locale = locale;
-      // @ts-ignore - vue-i18n type mismatch in global instance
       const globalLocale = i18n.global.locale as any;
       if (globalLocale.value !== undefined) {
         globalLocale.value = locale;

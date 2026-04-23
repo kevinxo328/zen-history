@@ -31,9 +31,7 @@ describe('Options.vue', () => {
     setActivePinia(createPinia());
     const cleanSettingStore = useCleanSettingStore();
     const userPreferenceStore = useUserPreferenceStore();
-    // @ts-ignore
     cleanSettingStore.$restoreFromStorage = vi.fn().mockResolvedValue(undefined);
-    // @ts-ignore
     userPreferenceStore.$restoreFromStorage = vi.fn().mockResolvedValue(undefined);
   });
 
