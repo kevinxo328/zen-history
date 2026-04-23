@@ -25,7 +25,9 @@ export default defineBackground(() => {
         }
 
         const enabled = savedState.autoClean?.enabled ?? false;
-        toggleAutoCleanAlarm(enabled);
+        const hour = savedState.autoClean?.hour ?? 0;
+        const minute = savedState.autoClean?.minute ?? 0;
+        toggleAutoCleanAlarm(enabled, hour, minute);
         if (enabled) {
           browser.alarms.get(AlarmsName.AUTO_CLEAN).then((alarm) => {
             if (!alarm) return;
@@ -74,6 +76,8 @@ export default defineBackground(() => {
         const saveType = savedState?.timeRange?.type;
         const saveValue = savedState?.timeRange?.value;
         const browsingDataTypes = savedState?.browsingDataTypes;
+        const hour = savedState?.autoClean?.hour ?? 0;
+        const minute = savedState?.autoClean?.minute ?? 0;
 
         if (!saveType || !saveValue) {
           console.warn('Invalid time range type or value, skipping cleanup.');
@@ -96,6 +100,10 @@ export default defineBackground(() => {
                 lastAutoCleanDuration: duration
               }
             });
+
+            // Reschedule the next alarm for tomorrow at the same time
+            toggleAutoCleanAlarm(true, hour, minute);
+            console.log(`Rescheduled next auto-clean for tomorrow at ${hour}:${minute}`);
           })
           .catch((error) => {
             console.error(`Failed to clear history: ${error.message || error}`);

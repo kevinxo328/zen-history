@@ -1,8 +1,9 @@
-import { setActivePinia, createPinia } from 'pinia';
-import { describe, it, expect, beforeEach } from 'vitest';
-import { useUserPreferenceStore } from '../stores/user-perference-store';
-import { Locale } from '../src/types/user-perference';
+import { createPinia,setActivePinia } from 'pinia';
+import { beforeEach,describe, expect, it } from 'vitest';
+
 import i18n from '../src/lib/i18n';
+import { Locale } from '../src/types/user-perference';
+import { useUserPreferenceStore } from '../stores/user-perference-store';
 
 describe('UserPreferenceStore', () => {
   beforeEach(() => {

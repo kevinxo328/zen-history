@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 
-import { BrowsingDataTypes,KeepRecentValue, TimeRange, TimeRangeType } from '@/types/clean-settings';
+import { BrowsingDataTypes, KeepRecentValue, TimeRange, TimeRangeType } from '@/types/clean-settings';
 
 export interface CleanSettingState {
   timeRange: TimeRange;
   browsingDataTypes: BrowsingDataTypes;
   autoClean: {
     enabled: boolean;
+    hour: number;
+    minute: number;
   };
   analytics: {
     lastAutoCleanTimestamp: number;
@@ -28,7 +30,9 @@ export const useCleanSettingStore = defineStore('cleanSetting', {
       formData: false
     },
     autoClean: {
-      enabled: false
+      enabled: false,
+      hour: 0,
+      minute: 0
     },
     analytics: {
       lastAutoCleanTimestamp: 0,

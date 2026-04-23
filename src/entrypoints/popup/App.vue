@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Check, Clock, LoaderCircle, Moon, Settings, Sun, Zap } from 'lucide-vue-next';
-import { onBeforeMount, ref, toRaw, watch } from 'vue';
+import { computed, onBeforeMount, ref, toRaw, watch } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
 import { Card, CardContent } from '@/components/ui/card';
@@ -26,7 +26,6 @@ import {
   TimeRange,
   TimeRangeType
 } from '@/types/clean-settings';
-import { Locale } from '@/types/user-perference';
 import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 import { useUserPreferenceStore } from '@@/stores/user-perference-store';
 
@@ -38,6 +37,58 @@ const userPerferenceStore = useUserPreferenceStore();
 const isCleaning = ref(false);
 const showCleanSuccess = ref(false);
 const lastCleanTotal = ref(0);
+
+const amPm = computed({
+  get: () => (cleanSettingStore.autoClean.hour >= 12 ? 'PM' : 'AM'),
+  set: (val) => {
+    let h = cleanSettingStore.autoClean.hour % 12;
+    if (val === 'PM') h += 12;
+    cleanSettingStore.autoClean.hour = h;
+    toggleAutoCleanAlarm(
+      cleanSettingStore.autoClean.enabled,
+      cleanSettingStore.autoClean.hour,
+      cleanSettingStore.autoClean.minute
+    );
+  }
+});
+
+const hour12 = computed({
+  get: () => {
+    const h = cleanSettingStore.autoClean.hour % 12;
+    return (h === 0 ? 12 : h).toString();
+  },
+  set: (val) => {
+    const h12 = parseInt(val);
+    let h = h12 % 12;
+    if (amPm.value === 'PM') h += 12;
+    cleanSettingStore.autoClean.hour = h;
+    toggleAutoCleanAlarm(
+      cleanSettingStore.autoClean.enabled,
+      cleanSettingStore.autoClean.hour,
+      cleanSettingStore.autoClean.minute
+    );
+  }
+});
+
+const minute = computed({
+  get: () => cleanSettingStore.autoClean.minute.toString().padStart(2, '0'),
+  set: (val) => {
+    cleanSettingStore.autoClean.minute = parseInt(val);
+    toggleAutoCleanAlarm(
+      cleanSettingStore.autoClean.enabled,
+      cleanSettingStore.autoClean.hour,
+      cleanSettingStore.autoClean.minute
+    );
+  }
+});
+
+const handleToggleAutoClean = (enabled: boolean) => {
+  toggleAutoCleanAlarm(
+    enabled,
+    cleanSettingStore.autoClean.hour,
+    cleanSettingStore.autoClean.minute
+  );
+};
 
 // Sync i18n with store locale
 watch(
@@ -195,16 +246,55 @@ onBeforeMount(async () => {
         <div class="mb-2 flex items-center justify-between">
           <div class="flex items-center gap-x-2">
             <Zap class="size-4" />
-            <h3 class="text-sm font-bold">{{ t('Auto Clean Schedule') }}</h3>
+            <h3 class="text-sm font-bold">{{ t('Daily Auto Clean') }}</h3>
           </div>
-          <Switch v-model="cleanSettingStore.autoClean.enabled" @update:model-value="toggleAutoCleanAlarm" />
+          <Switch
+            v-model="cleanSettingStore.autoClean.enabled"
+            @update:model-value="handleToggleAutoClean"
+          />
         </div>
-        <p>
-          {{
-            cleanSettingStore.autoClean.enabled
-              ? t('Auto clean will run daily at 12:00 AM')
-              : t('Auto clean is disabled')
-          }}
+        <div v-if="cleanSettingStore.autoClean.enabled">
+          <div class="mb-3 flex items-center gap-x-2">
+            <Select v-model="amPm">
+              <SelectTrigger class="h-8 w-20 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="AM">AM</SelectItem>
+                <SelectItem value="PM">PM</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select v-model="hour12">
+              <SelectTrigger class="h-8 w-16 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="h in Array.from({ length: 12 }, (_, i) => (i + 1).toString())"
+                  :key="h"
+                  :value="h"
+                >
+                  {{ h.padStart(2, '0') }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+
+            <span class="text-xs font-bold">:</span>
+
+            <Select v-model="minute">
+              <SelectTrigger class="h-8 w-16 text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="00">00</SelectItem>
+                <SelectItem value="30">30</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <p v-else class="text-xs text-foreground/70">
+          {{ t('Auto clean is disabled') }}
         </p>
         <div v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp" class="mt-2 flex flex-col gap-y-1 text-sm">
           <div class="flex items-center justify-between">

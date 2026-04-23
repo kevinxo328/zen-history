@@ -50,7 +50,7 @@ describe('App.vue', () => {
     const wrapper = mount(App);
     
     expect(wrapper.text()).toContain('Clean Time Range');
-    expect(wrapper.text()).toContain('Auto Clean Schedule');
+    expect(wrapper.text()).toContain('Daily Auto Clean');
   });
 
   it('displays the number of cleared items after a manual clean', async () => {

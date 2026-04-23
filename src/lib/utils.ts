@@ -13,6 +13,34 @@ export function getNextMidnightTimestamp(now: Date): number {
   return nextMidnight.getTime();
 }
 
+/**
+ * Calculates the next occurrence of a specific time (hour and minute).
+ * If the time has already passed today, it returns the time for tomorrow.
+ *
+ * @param now Current date
+ * @param targetHour Hour (0-23)
+ * @param targetMinute Minute (0-59)
+ * @returns Timestamp of the next occurrence
+ */
+export function getNextScheduledTimestamp(now: Date, targetHour: number, targetMinute: number): number {
+  const nextTime = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    targetHour,
+    targetMinute,
+    0,
+    0
+  );
+
+  // If the target time is in the past or right now, schedule it for tomorrow
+  if (nextTime.getTime() <= now.getTime()) {
+    nextTime.setDate(nextTime.getDate() + 1);
+  }
+
+  return nextTime.getTime();
+}
+
 export function formatRelativeTimeI18n(
   timestamp: number,
   t: ComposerTranslation<I18nSchema, I18nLocales>
