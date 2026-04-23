@@ -8,7 +8,7 @@ body:
     attributes:
       label: Extension Version
       description: Which version of Zen History are you using?
-      placeholder: 'e.g. v0.1.1'
+      placeholder: 'e.g. 0.1.1'
     validations:
       required: true
 
