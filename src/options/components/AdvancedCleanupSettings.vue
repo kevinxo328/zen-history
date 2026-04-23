@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import useI18n from '@/composibles/useI18n';
-import { type BrowsingDataTypes,TimeRangeType } from '@/types/clean-settings';
+import { type BrowsingDataTypes, TimeRangeType } from '@/types/clean-settings';
 import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 
 const { t } = useI18n();

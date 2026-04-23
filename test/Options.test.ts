@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { nextTick } from 'vue';
 
 import Options from '@/options/Options.vue';
-import { RemoveRecentValue,TimeRangeType } from '@/types/clean-settings';
+import { RemoveRecentValue, TimeRangeType } from '@/types/clean-settings';
 import { Locale } from '@/types/user-perference';
 
 import { useCleanSettingStore } from '../stores/clean-setting-store';
