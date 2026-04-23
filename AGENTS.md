@@ -44,4 +44,4 @@ The following scripts are available via `pnpm [script]`:
 
 1. **Follow OpenSpec:** Refer to `openspec/` for requirements before implementing changes.
 2. **Standardization:** Adhere to the established directory structure for new files.
-3. **Verification:** Always run `pnpm test` and `pnpm lint` before completing a task.
+3. **Verification:** Always run `pnpm test`, `pnpm lint`, `pnpm format` before completing a task.
