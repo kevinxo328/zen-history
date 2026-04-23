@@ -1,14 +1,19 @@
 <script lang="ts" setup>
-import { AlertCircle, ShieldCheck } from 'lucide-vue-next';
+import { Info, ShieldCheck } from 'lucide-vue-next';
+import { computed } from 'vue';
 
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import useI18n from '@/composibles/useI18n';
-import { TimeRangeType, type BrowsingDataTypes } from '@/types/clean-settings';
+import { type BrowsingDataTypes,TimeRangeType } from '@/types/clean-settings';
 import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 
 const { t } = useI18n();
 const cleanSettingStore = useCleanSettingStore();
+
+const isKeepRecentMode = computed(
+  () => cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT
+);
 
 const dataTypes: { id: keyof BrowsingDataTypes; label: string; desc: string }[] = [
   {
@@ -44,10 +49,11 @@ const dataTypes: { id: keyof BrowsingDataTypes; label: string; desc: string }[] 
       <!-- API Limitation Warning -->
       <div
         v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
-        class="bg-destructive/10 border-destructive/20 mt-4 flex items-start gap-x-4 rounded-2xl border p-6"
+        data-testid="browsing-data-warning"
+        class="bg-warning/10 border-warning/30 mt-4 flex items-start gap-x-4 rounded-2xl border p-6"
       >
-        <AlertCircle class="text-destructive mt-1 size-5 shrink-0" />
-        <p class="text-destructive text-sm leading-relaxed font-medium">
+        <Info class="text-warning mt-1 size-5 shrink-0" />
+        <p class="text-warning-foreground text-sm leading-relaxed font-medium">
           {{ t('Browsing data limitation warning') }}
         </p>
       </div>
@@ -57,10 +63,15 @@ const dataTypes: { id: keyof BrowsingDataTypes; label: string; desc: string }[] 
       <div
         v-for="type in dataTypes"
         :key="type.id"
-        class="hover:bg-muted/30 -mx-6 flex items-center justify-between rounded-2xl px-6 py-8 transition-colors"
+        class="-mx-6 flex items-center justify-between rounded-2xl px-6 py-8 transition-colors"
+        :class="isKeepRecentMode ? 'opacity-50' : 'hover:bg-muted/30'"
       >
         <div class="grid gap-y-1">
-          <Label :for="`switch-${type.id}`" class="cursor-pointer text-lg font-bold">
+          <Label
+            :for="`switch-${type.id}`"
+            class="text-lg font-bold"
+            :class="isKeepRecentMode ? 'cursor-not-allowed' : 'cursor-pointer'"
+          >
             {{ t(type.label) }}
           </Label>
           <p class="text-muted-foreground text-sm">{{ t(type.desc) }}</p>
@@ -69,6 +80,7 @@ const dataTypes: { id: keyof BrowsingDataTypes; label: string; desc: string }[] 
           :id="`switch-${type.id}`"
           v-model="cleanSettingStore.browsingDataTypes[type.id]"
           class="scale-125"
+          :disabled="isKeepRecentMode"
         />
       </div>
     </div>
