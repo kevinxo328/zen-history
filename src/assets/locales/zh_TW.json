@@ -34,7 +34,22 @@
   "English": "英文",
   "Chinese (Traditional)": "繁體中文",
   "< 1 second": "< 1 秒",
-
   "minute_ago": "{count} 分鐘前",
-  "hour_ago": "{count} 小時前"
+  "hour_ago": "{count} 小時前",
+  "General": "基本設定",
+  "Advanced Cleanup": "進階清理",
+  "About": "關於",
+  "Configure your browsing experience and privacy settings.": "設定您的瀏覽體驗與隱私偏好。",
+"Select your preferred language for the interface.": "選擇介面所使用的語言。",
+  "Select additional browsing data types to clear during cleanup. This helps maintain a completely clean history.": "選擇在清理時要額外刪除的數據類型，這有助於保持完全乾淨的紀錄。",
+  "Clear browsing cookies from all sites.": "清除所有網站的瀏覽 Cookie。",
+  "Clear cached images and files.": "清除快取的圖片與檔案。",
+  "Clear download history (files remain on disk).": "清除下載紀錄（實體檔案會保留在磁碟中）。",
+  "Clear saved form data and passwords.": "清除儲存的表單資料與密碼。",
+  "Version": "版本",
+  "Currently installed version of Zen History.": "目前安裝的 Zen History 版本。",
+  "Feedback & Support": "意見回饋與支援",
+  "Rate on Web Store": "在線上商店評分",
+  "Love Zen History? Support us by leaving a review on the Chrome Web Store.": "喜歡 Zen History 嗎？請在 Chrome 線上應用程式商店留下評論來支持我們。",
+  "Give a Rating": "給予評分"
 }

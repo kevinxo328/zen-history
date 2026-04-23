@@ -29,6 +29,13 @@ export function CreateWxtPersistPiniaPlugin(options: StoragePluginOptions = {}) 
       }
     };
 
+    // Watch for changes from other pages
+    const unwatch = storage.watch<StateTree>(key, (newState) => {
+      if (newState) {
+        store.$patch(newState);
+      }
+    });
+
     store.$subscribe(
       (_, state) => {
         saveToStorage(state);

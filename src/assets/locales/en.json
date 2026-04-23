@@ -35,5 +35,21 @@
   "Chinese (Traditional)": "Chinese (Traditional)",
   "< 1 second": "< 1 second",
   "minute_ago": "{count} minute ago | {count} minutes ago",
-  "hour_ago": "{count} hour ago | {count} hours ago"
+  "hour_ago": "{count} hour ago | {count} hours ago",
+  "General": "General",
+  "Advanced Cleanup": "Advanced Cleanup",
+  "About": "About",
+  "Configure your browsing experience and privacy settings.": "Configure your browsing experience and privacy settings.",
+"Select your preferred language for the interface.": "Select your preferred language for the interface.",
+  "Select additional browsing data types to clear during cleanup. This helps maintain a completely clean history.": "Select additional browsing data types to clear during cleanup. This helps maintain a completely clean history.",
+  "Clear browsing cookies from all sites.": "Clear browsing cookies from all sites.",
+  "Clear cached images and files.": "Clear cached images and files.",
+  "Clear download history (files remain on disk).": "Clear download history (files remain on disk).",
+  "Clear saved form data and passwords.": "Clear saved form data and passwords.",
+  "Version": "Version",
+  "Currently installed version of Zen History.": "Currently installed version of Zen History.",
+  "Feedback & Support": "Feedback & Support",
+  "Rate on Web Store": "Rate on Web Store",
+  "Love Zen History? Support us by leaving a review on the Chrome Web Store.": "Love Zen History? Support us by leaving a review on the Chrome Web Store.",
+  "Give a Rating": "Give a Rating"
 }

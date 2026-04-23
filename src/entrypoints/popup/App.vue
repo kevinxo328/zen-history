@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Check, Clock, LoaderCircle, Moon, Settings, Sun, Zap } from 'lucide-vue-next';
+import { Check, Clock, LoaderCircle, Settings, Zap } from 'lucide-vue-next';
 import { computed, onBeforeMount, ref, toRaw, watch } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
@@ -145,9 +145,8 @@ const openOptionsPage = () => {
 };
 
 onBeforeMount(async () => {
-  // Restore settings from storage when the component is mounted
+  // userPreferenceStore is already restored in popup/main.ts before mount
   await cleanSettingStore.$restoreFromStorage();
-  await userPerferenceStore.$restoreFromStorage();
 });
 </script>
 
@@ -164,10 +163,6 @@ onBeforeMount(async () => {
       <div class="flex items-center gap-x-2">
         <Button variant="outline" size="icon" @click="openOptionsPage">
           <Settings class="size-4" />
-        </Button>
-        <Button variant="outline" size="icon" @click="userPerferenceStore.toggleTheme">
-          <Moon v-if="userPerferenceStore.isDarkTheme" class="size-4" />
-          <Sun v-else class="size-4" />
         </Button>
       </div>
     </header>
