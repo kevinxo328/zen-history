@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2 (2026-04-23)
+
+### Bug Fixes
+
+- **Arc Browser Compatibility** — Fixed an issue where clicking the settings button in the popup did not open the settings page when using the Arc browser. The extension now uses a more compatible method to open new tabs.
+
 ## v0.2.1 (2026-04-23)
 
 ### Bug Fixes
