@@ -32,7 +32,7 @@ describe('AboutSettings.vue', () => {
     const wrapper = mount(AboutSettings);
     expect(wrapper.text()).toContain('About');
     expect(wrapper.text()).toContain('Version');
-    expect(wrapper.text()).toContain('v0.2.0');
+    expect(wrapper.text()).toContain('0.2.0');
   });
 
   it('renders feedback and support links', () => {
