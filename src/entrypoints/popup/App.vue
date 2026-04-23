@@ -140,7 +140,7 @@ const manualCleanTotalLabel = computed(() => {
 });
 
 const openOptionsPage = () => {
-  browser.runtime.openOptionsPage();
+  browser.tabs.create({ url: browser.runtime.getURL('/settings.html') });
 };
 
 onBeforeMount(async () => {
