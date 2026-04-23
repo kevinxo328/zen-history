@@ -14,8 +14,11 @@ function detectLocale(): I18nLocales {
   return 'en';
 }
 
-export default createI18n<[I18nSchema], I18nLocales>({
+const i18n = createI18n<[I18nSchema], I18nLocales>({
+  legacy: false,
   locale: detectLocale(), // Default locale
   fallbackLocale: 'en', // Fallback locale
   messages: messages as Record<I18nLocales, I18nSchema>
 });
+
+export default i18n;
