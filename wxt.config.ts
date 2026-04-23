@@ -22,6 +22,7 @@ export default defineConfig({
     permissions: ['history', 'storage', 'alarms', 'browsingData'],
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
-    default_locale: 'en'
+    default_locale: 'en',
+    options_page: 'settings.html'
   }
 });

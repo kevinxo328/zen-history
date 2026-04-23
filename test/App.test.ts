@@ -1,7 +1,9 @@
 import { mount } from '@vue/test-utils';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import App from '@/entrypoints/popup/App.vue';
+
 import { useCleanSettingStore } from '../stores/clean-setting-store';
 import { useUserPreferenceStore } from '../stores/user-perference-store';
 

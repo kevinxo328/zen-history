@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { KeepRecentValue, TimeRange, TimeRangeType, BrowsingDataTypes } from '@/types/clean-settings';
+import { BrowsingDataTypes,KeepRecentValue, TimeRange, TimeRangeType } from '@/types/clean-settings';
 
 export interface CleanSettingState {
   timeRange: TimeRange;

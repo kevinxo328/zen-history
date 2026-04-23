@@ -8,9 +8,9 @@ import { CreateWxtPersistPiniaPlugin } from '@/plugins/wxt-persist-pinia-plugin'
 import { Theme } from '@/types/user-perference';
 import { useUserPreferenceStore } from '@@/stores/user-perference-store';
 
-import App from './App.vue';
+import Options from './Options.vue';
 
-const app = createApp(App);
+const app = createApp(Options);
 const pinia = createPinia();
 
 pinia.use(CreateWxtPersistPiniaPlugin());

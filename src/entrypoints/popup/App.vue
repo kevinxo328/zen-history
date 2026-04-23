@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Check, Clock, LoaderCircle, Moon, Sun, Zap } from 'lucide-vue-next';
+import { Check, Clock, LoaderCircle, Moon, Settings, Sun, Zap } from 'lucide-vue-next';
 import { onBeforeMount, ref, toRaw } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
@@ -72,6 +72,10 @@ const handleClean = async (timeRange: TimeRange) => {
   }
 };
 
+const openOptionsPage = () => {
+  browser.runtime.openOptionsPage();
+};
+
 onBeforeMount(async () => {
   // Restore settings from storage when the component is mounted
   await cleanSettingStore.$restoreFromStorage();
@@ -89,11 +93,17 @@ onBeforeMount(async () => {
           <span class="text-foreground/60"> v{{ VERSION }} </span>
         </div>
       </div>
-      <Button variant="outline" size="icon" @click="userPerferenceStore.toggleTheme">
-        <Moon v-if="userPerferenceStore.isDarkTheme" class="size-4" />
-        <Sun v-else class="size-4" />
-      </Button>
+      <div class="flex items-center gap-x-2">
+        <Button variant="outline" size="icon" @click="openOptionsPage">
+          <Settings class="size-4" />
+        </Button>
+        <Button variant="outline" size="icon" @click="userPerferenceStore.toggleTheme">
+          <Moon v-if="userPerferenceStore.isDarkTheme" class="size-4" />
+          <Sun v-else class="size-4" />
+        </Button>
+      </div>
     </header>
+
     <Card>
       <CardContent>
         <div class="mb-3 flex items-center gap-x-2">
@@ -102,11 +112,15 @@ onBeforeMount(async () => {
         </div>
 
         <RadioGroup
-v-model="cleanSettingStore.timeRange.type" class="mb-3"
-          @update:model-value="setDefaultTimeRangeValue">
+          v-model="cleanSettingStore.timeRange.type"
+          class="mb-3"
+          @update:model-value="setDefaultTimeRangeValue"
+        >
           <div
-v-for="key in [TimeRangeType.KEEP_RECENT, TimeRangeType.REMOVE_RECENT]" :key="key"
-            class="flex items-center space-x-2">
+            v-for="key in [TimeRangeType.KEEP_RECENT, TimeRangeType.REMOVE_RECENT]"
+            :key="key"
+            class="flex items-center space-x-2"
+          >
             <RadioGroupItem :id="`option-${key}`" :value="key" />
             <Label :for="`option-${key}`" class="cursor-pointer text-xs">
               {{
@@ -125,8 +139,9 @@ v-for="key in [TimeRangeType.KEEP_RECENT, TimeRangeType.REMOVE_RECENT]" :key="ke
           }}
         </Label>
         <Select
-v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
-          v-model="cleanSettingStore.timeRange.value">
+          v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
+          v-model="cleanSettingStore.timeRange.value"
+        >
           <SelectTrigger class="w-full">
             <SelectValue />
           </SelectTrigger>
@@ -139,8 +154,9 @@ v-if="cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT"
           </SelectContent>
         </Select>
         <Select
-v-else-if="cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT"
-          v-model="cleanSettingStore.timeRange.value">
+          v-else-if="cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT"
+          v-model="cleanSettingStore.timeRange.value"
+        >
           <SelectTrigger class="w-full">
             <SelectValue />
           </SelectTrigger>
@@ -154,36 +170,7 @@ v-else-if="cleanSettingStore.timeRange.type === TimeRangeType.REMOVE_RECENT"
         </Select>
       </CardContent>
     </Card>
-    <Card>
-      <CardContent>
-        <div class="mb-3 flex items-center gap-x-2">
-          <Check class="size-4" />
-          <h3 class="text-sm font-bold">{{ t('Additional Data to Clear') }}</h3>
-        </div>
-        <div class="flex flex-col gap-y-3">
-          <div
-v-for="type in ['cookies', 'cache', 'downloads', 'formData']" :key="type"
-            class="flex items-center justify-between">
-            <Label :for="`switch-${type}`" class="cursor-pointer text-xs">
-              {{
-                t(
-                  type === 'cookies'
-                    ? 'Cookies'
-                    : type === 'cache'
-                      ? 'Cache'
-                      : type === 'downloads'
-                        ? 'Downloads'
-                        : 'Form Data'
-                )
-              }}
-            </Label>
-            <Switch
-:id="`switch-${type}`"
-              v-model="cleanSettingStore.browsingDataTypes[type as keyof typeof cleanSettingStore.browsingDataTypes]" />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+
     <Card>
       <CardContent>
         <div class="mb-2 flex items-center justify-between">
@@ -200,7 +187,7 @@ v-for="type in ['cookies', 'cache', 'downloads', 'formData']" :key="type"
               : t('Auto clean is disabled')
           }}
         </p>
-        <template v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp">
+        <div v-if="cleanSettingStore.analytics.lastAutoCleanTimestamp" class="mt-2 flex flex-col gap-y-1 text-sm">
           <div class="flex items-center justify-between">
             <span class="text-foreground/70">{{ t('Last executed') }}</span>
             <span class="font-bold">
@@ -221,12 +208,13 @@ v-for="type in ['cookies', 'cache', 'downloads', 'formData']" :key="type"
               ~{{ Intl.NumberFormat().format(cleanSettingStore.analytics.lastAutoCleanTotal) }}
             </span>
           </div>
-        </template>
+        </div>
       </CardContent>
     </Card>
+
     <div class="flex flex-col gap-y-2">
       <Button
-:disabled="isCleaning || showCleanSuccess"
+        :disabled="isCleaning || showCleanSuccess"
         :class="[isCleaning ? 'w-10' : 'w-full', showCleanSuccess ? 'opacity-100!' : '']"
         class="m-auto rounded-full transition-[width] duration-500 ease-out" @click="
           handleClean(
@@ -243,7 +231,7 @@ v-for="type in ['cookies', 'cache', 'downloads', 'formData']" :key="type"
           " @transitionend="showCleanSuccess = true">
         <LoaderCircle v-if="isCleaning" class="animate-spin" />
         <p
-v-else-if="showCleanSuccess" class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
+          v-else-if="showCleanSuccess" class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
           @animationend="showCleanSuccess = false">
           <Check />
           <span>{{ t('Cleaned successfully', { count: lastCleanTotal }) }}</span>
@@ -253,6 +241,7 @@ v-else-if="showCleanSuccess" class="animate-temporary-show inline-flex items-cen
     </div>
   </main>
 </template>
+
 <style scoped>
 .animate-temporary-show {
   animation: animate-temporary-show 2s;
