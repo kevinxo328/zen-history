@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
-import { Theme } from '@/types/user-perference';
+import i18n from '@/lib/i18n';
+import { Locale, Theme } from '@/types/user-perference';
 
 function getDefaultTheme(): Theme {
   if (typeof window !== 'undefined' && window.matchMedia) {
@@ -11,7 +12,8 @@ function getDefaultTheme(): Theme {
 
 export const useUserPreferenceStore = defineStore('userPreference', {
   state: () => ({
-    theme: getDefaultTheme()
+    theme: getDefaultTheme(),
+    locale: i18n.global.locale.value as Locale
   }),
   getters: {
     isDarkTheme: (state) => state.theme === Theme.DARK
@@ -19,6 +21,11 @@ export const useUserPreferenceStore = defineStore('userPreference', {
   actions: {
     toggleTheme() {
       this.theme = this.theme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
+    },
+    setLocale(locale: Locale) {
+      this.locale = locale;
+      // @ts-ignore - vue-i18n type mismatch in global instance
+      i18n.global.locale.value = locale;
     }
   }
 });
