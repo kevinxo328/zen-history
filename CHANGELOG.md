@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.2.0 (2026-04-23)
+
+### New Features
+
+- **Settings Redesign** — A completely revamped settings interface with better layout and real-time state synchronization.
+- **Scheduled Cleaning** — You can now schedule a specific time for daily automatic history cleanup.
+- **Enhanced Data Control** — Added experimental support for selecting specific browsing data types to clean, such as downloads, cookies, or cache.
+- **Language Support** — Added a language selection menu to switch the app's interface language.
+- **Feedback & Support** — Added a direct link to report bugs in the settings menu.
+
+### Improvements
+
+- **Performance Optimization** — Improved the speed and efficiency of history item counting.
+- **Smarter Locale Sync** — App language settings now sync seamlessly between the store and the interface.
+- **Organized Settings** — Advanced data settings have been moved to a dedicated tab for a cleaner experience.
+
+
 ## v0.1.1 (2026-03-12)
 
 ### Improvements
