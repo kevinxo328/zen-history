@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ExternalLink, Info, Star } from 'lucide-vue-next';
+
 import useI18n from '@/composibles/useI18n';
 
 const { t } = useI18n();
-const version = '0.1.1';
+const version = browser.runtime.getManifest().version;
 const storeUrl = 'https://chromewebstore.google.com/detail/zen-history/flmobmbagdcdhajcehjocokfcjbenecg';
 </script>
 

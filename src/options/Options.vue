@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Info, Settings, ShieldAlert } from 'lucide-vue-next';
-import { onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
 import useI18n from '@/composibles/useI18n';
@@ -23,6 +23,8 @@ const tabs = [
   { id: 'cleanup', label: 'Advanced Cleanup', icon: ShieldAlert, component: AdvancedCleanupSettings },
   { id: 'about', label: 'About', icon: Info, component: AboutSettings }
 ];
+
+const activeTabConfig = computed(() => tabs.find((tab) => tab.id === activeTab.value));
 
 // Sync i18n with store locale
 watch(
@@ -62,7 +64,7 @@ onBeforeMount(async () => {
           :key="tab.id"
           :variant="activeTab === tab.id ? 'secondary' : 'ghost'"
           class="w-full justify-start gap-x-4 h-14 px-6 text-base font-black transition-all rounded-2xl"
-          :class="activeTab === tab.id ? 'shadow-xl bg-secondary text-secondary-foreground scale-[1.02]' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'"
+          :class="activeTab === tab.id ? 'shadow-xl scale-[1.02]' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'"
           @click="activeTab = tab.id"
         >
           <component :is="tab.icon" class="size-5" />
@@ -84,7 +86,7 @@ onBeforeMount(async () => {
       <div class="max-w-3xl mx-auto space-y-16">
         <header class="space-y-2">
           <h2 class="text-4xl font-black tracking-tighter leading-none">
-            {{ t(tabs.find((t) => t.id === activeTab)?.label || '') }}
+            {{ t(activeTabConfig?.label || '') }}
           </h2>
           <p class="text-muted-foreground text-base font-medium max-w-xl">
             {{ t('Configure your browsing experience and privacy settings.') }}
@@ -100,7 +102,7 @@ onBeforeMount(async () => {
           leave-from-class="transform translate-y-0 opacity-100"
           leave-to-class="transform translate-y-8 opacity-0"
         >
-          <component :is="tabs.find(t => t.id === activeTab)?.component" />
+          <component :is="activeTabConfig?.component" />
         </transition>
       </div>
     </main>

@@ -4,12 +4,13 @@ import { ShieldCheck } from 'lucide-vue-next';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import useI18n from '@/composibles/useI18n';
+import type { BrowsingDataTypes } from '@/types/clean-settings';
 import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 
 const { t } = useI18n();
 const cleanSettingStore = useCleanSettingStore();
 
-const dataTypes = [
+const dataTypes: { id: keyof BrowsingDataTypes; label: string; desc: string }[] = [
   { id: 'cookies', label: 'Cookies', desc: 'Clear browsing cookies from all sites.' },
   { id: 'cache', label: 'Cache', desc: 'Clear cached images and files.' },
   { id: 'downloads', label: 'Downloads', desc: 'Clear download history (files remain on disk).' },
@@ -43,7 +44,7 @@ const dataTypes = [
         </div>
         <Switch
           :id="`switch-${type.id}`"
-          v-model="cleanSettingStore.browsingDataTypes[type.id as keyof typeof cleanSettingStore.browsingDataTypes]"
+          v-model="cleanSettingStore.browsingDataTypes[type.id]"
           class="scale-125"
         />
       </div>
