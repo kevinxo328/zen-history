@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ExternalLink, Info, Star } from 'lucide-vue-next';
+import { Bug, ExternalLink, Info, Star } from 'lucide-vue-next';
 
 import useI18n from '@/composibles/useI18n';
 
 const { t } = useI18n();
-const version = browser.runtime.getManifest().version;
+const version = import.meta.env.PACKAGE_VERSION || browser.runtime.getManifest().version;
 const storeUrl = 'https://chromewebstore.google.com/detail/zen-history/flmobmbagdcdhajcehjocokfcjbenecg';
+const bugReportUrl = 'https://github.com/kevinxo328/zen-history/issues/new?template=bug_report.yml';
 </script>
 
 <template>
@@ -51,6 +52,23 @@ const storeUrl = 'https://chromewebstore.google.com/detail/zen-history/flmobmbag
         >
           {{ t('Give a Rating') }}
           <ExternalLink class="size-4" />
+        </a>
+      </div>
+
+      <div class="flex items-center justify-between py-2">
+        <div class="space-y-1">
+          <Label class="text-base font-semibold">{{ t('Report an Issue') }}</Label>
+          <p class="text-sm text-muted-foreground">
+            {{ t('Encountered an issue? Help us improve by reporting bugs on GitHub.') }}
+          </p>
+        </div>
+        <a 
+          :href="bugReportUrl" 
+          target="_blank" 
+          class="flex items-center gap-x-2 px-6 h-11 bg-muted text-muted-foreground font-bold rounded-xl hover:bg-muted/80 transition-colors"
+        >
+          {{ t('Report on GitHub') }}
+          <Bug class="size-4" />
         </a>
       </div>
     </section>
