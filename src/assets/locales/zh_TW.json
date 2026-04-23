@@ -29,8 +29,13 @@
   "Cookies": "Cookie",
   "Cache": "快取資料",
   "Downloads": "下載紀錄",
-  "Form Data": "表單自動填入資料",
+  "Form Data": "表單資料",
+  "Language": "語言",
+  "Interface Language": "介面語言",
+  "English": "英文",
+  "Chinese (Traditional)": "繁體中文",
   "< 1 second": "< 1 秒",
+
   "minute_ago": "{count} 分鐘前",
   "hour_ago": "{count} 小時前"
 }
