@@ -4,6 +4,8 @@ set -u
 
 INPUT=$(cat)
 declare -a TARGETS=()
+TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.toolName // empty' 2>/dev/null)
+TOOL_ARGS=$(printf '%s' "$INPUT" | jq -r '.toolArgs // empty' 2>/dev/null)
 
 is_supported_file() {
   [[ "$1" =~ \.(js|jsx|ts|tsx|vue)$ ]]
@@ -11,8 +13,19 @@ is_supported_file() {
 
 add_target() {
   local candidate="$1"
-  if [[ -n "$candidate" && -f "$candidate" ]] && is_supported_file "$candidate"; then
-    TARGETS+=("$candidate")
+  local normalized
+
+  if [[ -z "$candidate" ]]; then
+    return
+  fi
+
+  normalized="${candidate#./}"
+  if [[ "$normalized" == a/* || "$normalized" == b/* ]]; then
+    normalized="${normalized#?/}"
+  fi
+
+  if [[ -f "$normalized" ]] && is_supported_file "$normalized"; then
+    TARGETS+=("$normalized")
   fi
 }
 
@@ -29,20 +42,49 @@ collect_git_targets() {
       git -C "$git_root" diff --name-only --diff-filter=ACMR
       git -C "$git_root" diff --cached --name-only --diff-filter=ACMR
       git -C "$git_root" ls-files --others --exclude-standard
-    } | sed '/^$/d' | sort -u
+      } | sed '/^$/d' | sort -u
   )
 }
+
+if [[ -n "$TOOL_NAME" ]] && [[ ! "$TOOL_NAME" =~ ^(edit|create|apply_patch|multi_edit)$ ]]; then
+  exit 0
+fi
+
+if [[ -n "$TOOL_ARGS" ]]; then
+  FILE_PATH=$(printf '%s' "$TOOL_ARGS" | jq -r '.file_path // .path // empty' 2>/dev/null)
+  if [[ -n "$FILE_PATH" ]]; then
+    add_target "$FILE_PATH"
+  fi
+
+  PATCH_TEXT=$(printf '%s' "$TOOL_ARGS" | jq -r '.input // .patch // empty' 2>/dev/null)
+  if [[ -n "$PATCH_TEXT" ]]; then
+    while IFS= read -r line; do
+      CANDIDATE=$(printf '%s\n' "$line" | sed -nE 's/^\*\*\* (Update|Add|Delete) File: (.+)$/\2/p')
+      if [[ -n "$CANDIDATE" ]]; then
+        add_target "$CANDIDATE"
+      fi
+    done <<< "$PATCH_TEXT"
+  fi
+fi
 
 FILE_PATH=$(printf '%s' "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
 if [[ -n "$FILE_PATH" ]]; then
   add_target "$FILE_PATH"
-else
+fi
+
+if [[ ${#TARGETS[@]} -eq 0 ]]; then
   collect_git_targets
 fi
 
 if [[ ${#TARGETS[@]} -eq 0 ]]; then
   exit 0
 fi
+
+declare -a UNIQUE_TARGETS=()
+while IFS= read -r candidate; do
+  UNIQUE_TARGETS+=("$candidate")
+done < <(printf '%s\n' "${TARGETS[@]}" | sed '/^$/d' | sort -u)
+TARGETS=("${UNIQUE_TARGETS[@]}")
 
 pnpm exec prettier --write "${TARGETS[@]}" >/dev/null 2>&1
 pnpm exec eslint --fix "${TARGETS[@]}" >/dev/null 2>&1
