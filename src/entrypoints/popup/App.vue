@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Check, Clock, LoaderCircle, Settings, Zap } from 'lucide-vue-next';
-import { computed, onBeforeMount, ref, toRaw, watch } from 'vue';
+import { computed, onBeforeMount, ref, toRaw } from 'vue';
 
 import Button from '@/components/ui/button/Button.vue';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import useI18n from '@/composibles/useI18n';
-import i18n from '@/lib/i18n';
+import useLocaleSync from '@/composibles/useLocaleSync';
 import { formatMsToTimeString, formatRelativeTimeI18n } from '@/lib/utils';
 import { toggleAutoCleanAlarm } from '@/lib/wxt';
 import { CleanMessage } from '@/types/background';
@@ -91,20 +91,7 @@ const handleToggleAutoClean = (enabled: boolean) => {
   );
 };
 
-// Sync i18n with store locale
-watch(
-  () => userPerferenceStore.locale,
-  (newLocale) => {
-    if (!newLocale) return;
-    const globalLocale = i18n.global.locale as any;
-    if (globalLocale.value !== undefined) {
-      globalLocale.value = newLocale as any;
-    } else {
-      i18n.global.locale = newLocale as any;
-    }
-  },
-  { immediate: true }
-);
+useLocaleSync(() => userPerferenceStore.locale);
 
 const setDefaultTimeRangeValue = () => {
   if (cleanSettingStore.timeRange.type === TimeRangeType.KEEP_RECENT) {
