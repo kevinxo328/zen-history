@@ -1,6 +1,6 @@
 # Zen History
 
-![GitHub Tag](https://img.shields.io/github/v/tag/kevinxo328/zen-history)
+![GitHub Release](https://img.shields.io/github/v/release/kevinxo328/zen-history)
 
 Zen History is a quiet companion that helps you stay present online. It clears your browsing data gently and efficiently, always according to your wishes.
 
