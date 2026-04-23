@@ -27,7 +27,7 @@ const bugReportUrl = 'https://github.com/kevinxo328/zen-history/issues/new?templ
           </p>
         </div>
         <span class="bg-muted rounded-full px-4 py-1.5 text-sm font-bold tracking-wider">
-          v{{ version }}
+          {{ version }}
         </span>
       </div>
     </section>

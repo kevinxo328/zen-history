@@ -156,7 +156,7 @@ onBeforeMount(async () => {
         <img src="@/assets/Logo.svg" class="size-8" alt="logo" />
         <div>
           <h1 class="text-[1.2rem] leading-none font-bold">Zen History</h1>
-          <span class="text-foreground/60"> v{{ VERSION }} </span>
+          <span class="text-foreground/60"> {{ VERSION }}</span>
         </div>
       </div>
       <div class="flex items-center gap-x-2">
