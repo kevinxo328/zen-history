@@ -37,6 +37,7 @@ const userPerferenceStore = useUserPreferenceStore();
 const isCleaning = ref(false);
 const showCleanSuccess = ref(false);
 const lastCleanTotal = ref(0);
+const lastCleanTotalCapped = ref(false);
 
 const amPm = computed({
   get: () => (cleanSettingStore.autoClean.hour >= 12 ? 'PM' : 'AM'),
@@ -123,6 +124,7 @@ const handleClean = async (timeRange: TimeRange) => {
     );
     if (response && response.success) {
       lastCleanTotal.value = response.total;
+      lastCleanTotalCapped.value = Boolean(response.isCountCapped);
     }
   } catch (error) {
     console.error('Error during cleaning:', error);
@@ -139,6 +141,16 @@ const handleClean = async (timeRange: TimeRange) => {
     );
   }
 };
+
+const autoCleanTotalLabel = computed(() => {
+  const total = Intl.NumberFormat().format(cleanSettingStore.analytics.lastAutoCleanTotal);
+  return cleanSettingStore.analytics.lastAutoCleanTotalCapped ? `${total}+` : total;
+});
+
+const manualCleanTotalLabel = computed(() => {
+  const total = Intl.NumberFormat().format(lastCleanTotal.value);
+  return lastCleanTotalCapped.value ? `${total}+` : total;
+});
 
 const openOptionsPage = () => {
   browser.runtime.openOptionsPage();
@@ -309,7 +321,7 @@ onBeforeMount(async () => {
           <div class="flex items-center justify-between">
             <span class="text-foreground/70">{{ t('Total cleaned') }}</span>
             <span class="font-bold">
-              ~{{ Intl.NumberFormat().format(cleanSettingStore.analytics.lastAutoCleanTotal) }}
+              ~{{ autoCleanTotalLabel }}
             </span>
           </div>
         </div>
@@ -338,7 +350,7 @@ onBeforeMount(async () => {
           v-else-if="showCleanSuccess" class="animate-temporary-show inline-flex items-center justify-center gap-x-2"
           @animationend="showCleanSuccess = false">
           <Check />
-          <span>{{ t('Cleaned successfully', { count: lastCleanTotal }) }}</span>
+          <span>{{ t('Cleaned successfully', { count: manualCleanTotalLabel }) }}</span>
         </p>
         <span v-else>{{ t('Clean now') }}</span>
       </Button>

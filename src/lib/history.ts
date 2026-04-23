@@ -6,11 +6,17 @@ import {
   TimeRangeType
 } from '@/types/clean-settings';
 
+export interface CleanHistoryOptions {
+  needEstimate?: boolean;
+  countCap?: number;
+}
+
 export async function cleanHistory(
   timeRange: TimeRange,
-  dataTypes?: BrowsingDataTypes
-): Promise<{ total: number; duration: number }> {
-  const MAX_RESULTS = 10000; // Large number to get an approximate count
+  dataTypes?: BrowsingDataTypes,
+  options: CleanHistoryOptions = {}
+): Promise<{ total: number; duration: number; isCountCapped: boolean }> {
+  const { needEstimate = true, countCap = 10000 } = options;
   const now = new Date().getTime();
   const perfStart = performance.now();
 
@@ -57,18 +63,23 @@ export async function cleanHistory(
     }
   }
 
-  // 1. Search to get an approximate count of items to be deleted
-  const searchResults = await browser.history.search({
-    text: '',
-    maxResults: MAX_RESULTS,
-    ...(startTime !== null ? { startTime } : {}),
-    ...(endTime !== null ? { endTime } : {})
-  });
+  let total = 0;
+  let isCountCapped = false;
 
-  const total = searchResults ? searchResults.length : 0;
+  // 1. Search to get an approximate count only when needed.
+  if (needEstimate) {
+    const searchResults = await browser.history.search({
+      text: '',
+      maxResults: countCap,
+      ...(startTime !== null ? { startTime } : {}),
+      ...(endTime !== null ? { endTime } : {})
+    });
+    total = searchResults ? searchResults.length : 0;
+    isCountCapped = total >= countCap;
+  }
 
-  // 2. Delete the range using native API if there are items to delete
-  if (total > 0) {
+  // 2. Delete the range using native API.
+  if (!needEstimate || total > 0) {
     await browser.history.deleteRange({
       startTime: startTime !== null ? startTime : 0,
       endTime: endTime !== null ? endTime : Date.now()
@@ -92,6 +103,7 @@ export async function cleanHistory(
 
   return {
     total,
-    duration
+    duration,
+    isCountCapped
   };
 }

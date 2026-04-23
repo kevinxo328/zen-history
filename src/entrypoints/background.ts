@@ -49,9 +49,10 @@ export default defineBackground(() => {
       const browsingDataTypes = cleanMessage.browsingDataTypes;
 
       cleanHistory(timeRange, browsingDataTypes)
-        .then(({ total, duration }) => {
-          console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
-          sendResponse({ success: true, total, duration });
+        .then(({ total, duration, isCountCapped }) => {
+          const displayTotal = isCountCapped ? `${total}+` : total;
+          console.log(`Successfully deleted ~${displayTotal} history items in ${duration}ms`);
+          sendResponse({ success: true, total, duration, isCountCapped });
         })
         .catch((error) => {
           console.error(`Failed to clear history: ${error.message || error}`);
@@ -88,16 +89,21 @@ export default defineBackground(() => {
           value: saveValue
         } as TimeRange;
 
-        cleanHistory(timeRange, browsingDataTypes)
-          .then(({ total, duration }) => {
-            console.log(`Successfully deleted ~${total} history items in ${duration}ms`);
+        cleanHistory(timeRange, browsingDataTypes, {
+          needEstimate: true,
+          countCap: 5000
+        })
+          .then(({ total, duration, isCountCapped }) => {
+            const displayTotal = isCountCapped ? `${total}+` : total;
+            console.log(`Successfully deleted ~${displayTotal} history items in ${duration}ms`);
             storage.setItem(key, {
               ...savedState,
               analytics: {
                 ...savedState.analytics,
                 lastAutoCleanTimestamp: Date.now(),
                 lastAutoCleanTotal: total,
-                lastAutoCleanDuration: duration
+                lastAutoCleanDuration: duration,
+                lastAutoCleanTotalCapped: isCountCapped
               }
             });
 

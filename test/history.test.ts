@@ -80,6 +80,7 @@ describe('cleanHistory', () => {
 
     expect(browserMock.history.deleteRange).not.toHaveBeenCalled();
     expect(result.total).toBe(0);
+    expect(result.isCountCapped).toBe(false);
   });
 
   it('calls browsingData.remove when data types are selected', async () => {
@@ -104,5 +105,39 @@ describe('cleanHistory', () => {
       { since: oneHourAgo },
       { cookies: true, cache: true, downloads: false, formData: false }
     );
+  });
+
+  it('marks count as capped when search reaches the cap', async () => {
+    browserMock.history.search.mockResolvedValue(new Array(5).fill({ url: 'https://example.com' }));
+
+    const result = await cleanHistory(
+      {
+        type: TimeRangeType.REMOVE_RECENT,
+        value: RemoveRecentValue.PAST_ONE_DAY
+      },
+      undefined,
+      {
+        countCap: 5
+      }
+    );
+
+    expect(result.total).toBe(5);
+    expect(result.isCountCapped).toBe(true);
+  });
+
+  it('can skip estimate and still delete by range', async () => {
+    await cleanHistory(
+      {
+        type: TimeRangeType.REMOVE_RECENT,
+        value: RemoveRecentValue.PAST_ONE_HOUR
+      },
+      undefined,
+      {
+        needEstimate: false
+      }
+    );
+
+    expect(browserMock.history.search).not.toHaveBeenCalled();
+    expect(browserMock.history.deleteRange).toHaveBeenCalledTimes(1);
   });
 });
