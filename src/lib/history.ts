@@ -88,15 +88,25 @@ export async function cleanHistory(
 
   // 3. Clear browsing data if selected
   if (dataTypes && Object.values(dataTypes).some((v) => v)) {
-    await browser.browsingData.remove(
-      { since: startTime !== null ? startTime : 0 },
-      {
-        cookies: dataTypes.cookies,
-        cache: dataTypes.cache,
-        downloads: dataTypes.downloads,
-        formData: dataTypes.formData
-      }
-    );
+    /**
+     * API Limitation Notice:
+     * chrome.browsingData.remove only supports 'since' (start time), not 'until' (end time).
+     * - In REMOVE_RECENT mode: We use 'since: startTime', which works correctly.
+     * - In KEEP_RECENT mode: We would need 'until: endTime', which is NOT supported.
+     * To prevent accidental loss of recent data (like cookies) that the user wants to KEEP,
+     * we skip browsing data cleanup in KEEP_RECENT mode.
+     */
+    if (timeRange.type === TimeRangeType.REMOVE_RECENT) {
+      await browser.browsingData.remove(
+        { since: startTime !== null ? startTime : 0 },
+        {
+          cookies: dataTypes.cookies,
+          cache: dataTypes.cache,
+          downloads: dataTypes.downloads,
+          formData: dataTypes.formData
+        }
+      );
+    }
   }
 
   const duration = Math.round(performance.now() - perfStart);
