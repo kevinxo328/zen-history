@@ -44,7 +44,8 @@ jobs:
         with:
           body: ${{ steps.changelog.outputs.notes }}
 
-      - run: pnpm wxt submit
+      - name: Submit to Chrome Web Store
+        run: pnpm wxt submit --chrome-zip dist/*-chrome.zip
         env:
           CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
           CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
