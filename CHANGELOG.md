@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.1 (2026-04-23)
+
+### Bug Fixes
+
+- **Keep Recent Safety** — In "Keep Recent" mode, browsing data (cookies, cache, downloads, etc.) is no longer cleared. The Chrome API does not support an "until" parameter, making this operation unsafe and potentially destructive to recent sessions.
+- **Disabled Unavailable Options** — Browsing data switches are now visually dimmed and disabled when "Keep Recent" mode is active, accurately reflecting that these options have no effect in this mode.
+
 ## v0.2.0 (2026-04-23)
 
 ### New Features
