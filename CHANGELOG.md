@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.3 (2026-04-28)
+
+### Improvements
+
+- **Security & Maintenance** — Updated internal dependencies to ensure the extension remains secure and reliable.
+
 ## v0.2.2 (2026-04-23)
 
 ### Bug Fixes
