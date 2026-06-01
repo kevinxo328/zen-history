@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/commit-message/SKILL.md",
       "computedHash": "55528d1f494ddf2ee8d0b11939bfa80ddd70cda40ef6ec7c1ceb4b3b5e1e35f4"
+    },
+    "write-changelog": {
+      "source": "kevinxo328/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/write-changelog/SKILL.md",
+      "computedHash": "28b6d3d224b00f2706f27f87be330ac45440cfa2e2492e8948289f5796f43694"
     }
   }
 }
