@@ -28,7 +28,11 @@ export default defineConfig({
       ? {
           browser_specific_settings: {
             gecko: {
-              id: 'zen-history@kevinxo328'
+              id: 'zen-history@kevinxo328',
+              strict_min_version: '115.0',
+              data_collection_permissions: {
+                required: ['none']
+              }
             }
           }
         }
