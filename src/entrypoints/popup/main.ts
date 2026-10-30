@@ -5,6 +5,7 @@ import { createApp } from 'vue';
 
 import i18n from '@/lib/i18n';
 import { CreateWxtPersistPiniaPlugin } from '@/plugins/wxt-persist-pinia-plugin';
+import { useCleanSettingStore } from '@@/stores/clean-setting-store';
 import { useUserPreferenceStore } from '@@/stores/user-perference-store';
 
 import App from './App.vue';
@@ -16,9 +17,13 @@ pinia.use(CreateWxtPersistPiniaPlugin());
 app.use(pinia);
 
 const userPreferenceStore = useUserPreferenceStore(pinia);
+const cleanSettingStore = useCleanSettingStore(pinia);
 
 app.use(i18n);
 
-userPreferenceStore.$restoreFromStorage().then(() => {
+Promise.all([
+  userPreferenceStore.$restoreFromStorage(),
+  cleanSettingStore.$restoreFromStorage()
+]).then(() => {
   app.mount('#app');
 });

@@ -18,13 +18,22 @@ export default defineConfig({
       })
     ]
   }),
-  manifest: {
+  manifest: (env) => ({
     permissions: ['history', 'storage', 'alarms', 'browsingData'],
     name: '__MSG_extName__',
     description: '__MSG_extDescription__',
     default_locale: 'en',
-    options_page: 'settings.html'
-  },
+    options_page: 'settings.html',
+    ...(env.browser === 'firefox'
+      ? {
+          browser_specific_settings: {
+            gecko: {
+              id: 'zen-history@kevinxo328'
+            }
+          }
+        }
+      : {})
+  }),
   // @ts-expect-error - submit is a valid wxt config key but missing from UserConfig types
   submit: {
     chrome: {

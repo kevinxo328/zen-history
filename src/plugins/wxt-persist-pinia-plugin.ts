@@ -9,21 +9,27 @@ export function CreateWxtPersistPiniaPlugin(options: StoragePluginOptions = {}) 
 
   return ({ store }: PiniaPluginContext) => {
     const key = `${prefix}:${store.$id}` as const;
+    let isRestoring = false;
 
     const restoreFromStorage = async (): Promise<void> => {
       try {
+        isRestoring = true;
         const savedState = await storage.getItem<StateTree>(key);
         if (savedState && typeof savedState === 'object') {
           store.$patch(savedState);
         }
       } catch (error) {
         console.error(`Failed to restore store ${store.$id} from storage:`, error);
+      } finally {
+        isRestoring = false;
       }
     };
 
     const saveToStorage = async (state: StateTree): Promise<void> => {
+      if (isRestoring) return;
       try {
-        await storage.setItem(key, state);
+        const plainState = JSON.parse(JSON.stringify(state));
+        await storage.setItem(key, plainState);
       } catch (error) {
         console.error(`Failed to save store ${store.$id} to storage:`, error);
       }
@@ -32,7 +38,12 @@ export function CreateWxtPersistPiniaPlugin(options: StoragePluginOptions = {}) 
     // Watch for changes from other pages (unwatch intentionally discarded - no teardown hook available)
     void storage.watch<StateTree>(key, (newState) => {
       if (newState) {
-        store.$patch(newState);
+        isRestoring = true;
+        try {
+          store.$patch(newState);
+        } finally {
+          isRestoring = false;
+        }
       }
     });
 
